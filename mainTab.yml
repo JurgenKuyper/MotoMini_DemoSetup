@@ -1,0 +1,107 @@
+// Circle : Item {
+//   property int r: 5 // radius of circle
+  // instead of having to declate a property and reference it in the
+  //  rectangle below, just declare it as an alias for the existing property
+  //  (since Rectangle has a color property, even if we didn't specify a value
+  //   for it in the Rectangle instance)
+//   property alias color: circrect.color
+  // we implement the circle using a Rectangle with corner radii set to
+  //  half their width/height
+  //   Rectangle {
+//     id: circrect
+//     width: r*2
+//     height: r*2
+//     borderWidth: r
+//   }
+// }
+MainTab : Column {
+  spacing: 10
+  Row {
+    id: letterRow1
+    Rectangle { width: 40; height: 40; color: "blue" }
+    Rectangle { width: 40; height: 40; color: "blue" }
+    Rectangle { width: 40; height: 40; color: "blue" }
+    Rectangle { width: 40; height: 40; color: "blue" }
+    Rectangle { width: 40; height: 40; color: "blue" }
+    Rectangle { width: 40; height: 40; color: "blue" }
+    Rectangle { width: 40; height: 40; color: "blue" }
+    Rectangle { width: 40; height: 40; color: "blue" }
+    Rectangle { width: 40; height: 40; color: "blue" }
+    Rectangle { width: 40; height: 40; color: "blue" }
+    Rectangle { width: 40; height: 40; color: "blue" }
+    Rectangle { width: 40; height: 40; color: "blue" }
+    Rectangle { width: 40; height: 40; color: "blue" }
+  }
+  Stack {
+    //count: 2
+    currentIndex: 0
+    id: stacktest
+    Rectangle { width: 40; height: 40; color: "blue" }
+    Rectangle { width: 40; height: 40; color: "red" }
+  }
+  Row {
+    id: letterRow2
+    Rectangle { width: 40; height: 40; color: "blue" }
+    Rectangle { width: 40; height: 40; color: "blue" }
+    Rectangle { width: 40; height: 40; color: "blue" }
+    Rectangle { width: 40; height: 40; color: "blue" }
+    Rectangle { width: 40; height: 40; color: "blue" }
+    Rectangle { width: 40; height: 40; color: "blue" }
+    Rectangle { width: 40; height: 40; color: "blue" }
+    Rectangle { width: 40; height: 40; color: "blue" }
+    Rectangle { width: 40; height: 40; color: "blue" }
+    Rectangle { width: 40; height: 40; color: "blue" }
+    Rectangle { width: 40; height: 40; color: "blue" }
+    Rectangle { width: 40; height: 40; color: "blue" }
+    Rectangle { width: 40; height: 40; color: "blue" }
+  }
+  Rectangle {
+    width: 1
+    height: 50
+    radius: 5
+    color: "white"
+    borderColor: "white"
+    borderWidth: 2
+  }
+  Row {
+    spacing: 128
+    id: imagerow
+    Column {
+      id: letterCollumn1
+      Rectangle { radius: 20; width: 40; height: 40; color: "blue"}
+      Rectangle { width: 40; height: 40; color: "blue" }
+      Rectangle { width: 40; height: 40; color: "blue" }
+      Rectangle { width: 40; height: 40; color: "blue" }
+      Rectangle { width: 40; height: 40; color: "blue" }
+      Rectangle { width: 40; height: 40; color: "blue" }
+      Rectangle { width: 40; height: 40; color: "blue" }
+      Rectangle { width: 40; height: 40; color: "blue" }
+      Rectangle { width: 40; height: 40; color: "blue" }
+      Rectangle { width: 40; height: 40; color: "blue" }
+      Rectangle { width: 40; height: 40; color: "blue" }
+      Rectangle { width: 40; height: 40; color: "blue" }
+      Rectangle { width: 40; height: 40; color: "blue" }
+    }
+    Column {
+      Image {
+        id: myimage
+        width: 808/1.6
+        height: 867/1.6
+        source: "images/MotoMini.jpg"
+        fillMode: Const.Stretch
+      }
+      TextField {
+        //placeholderTextColor: "#ff0000"
+        placeholderText: "your word here"
+        alphaInputOnly: true
+      }
+      Button {
+        text: "settings"
+      }
+      Button {
+        text: "start"
+        checkable: true
+      }
+    }
+  }    
+}

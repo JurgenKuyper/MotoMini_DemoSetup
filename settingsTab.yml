@@ -1,0 +1,40 @@
+
+// Declare a new Item that shows various basic Items
+// (it will be used in the top-level TabPanel of the Utility window)
+//  It inherits from Column so will arrange child Items vertically and its
+//  height will automatically accomodate all the children
+SettingsTab : Item
+{
+    Grid {
+        spacing: 10
+        rows: 2
+        columns: 13
+        Rectangle { width: 40; height: 40; color: "blue" }
+        Rectangle { width: 40; height: 40; color: "blue" }
+        Rectangle { width: 40; height: 40; color: "blue" }
+        Rectangle { width: 40; height: 40; color: "blue" }
+        Rectangle { width: 40; height: 40; color: "blue" }
+        Rectangle { width: 40; height: 40; color: "blue" }
+        Rectangle { width: 40; height: 40; color: "blue" }
+        Rectangle { width: 40; height: 40; color: "blue" }
+        Rectangle { width: 40; height: 40; color: "blue" }
+        Rectangle { width: 40; height: 40; color: "blue" }
+        Rectangle { width: 40; height: 40; color: "blue" }
+        Rectangle { width: 40; height: 40; color: "blue" }
+        Rectangle { width: 40; height: 40; color: "blue" }
+        Rectangle { width: 40; height: 40; color: "blue" }
+        Rectangle { width: 40; height: 40; color: "blue" }
+        Rectangle { width: 40; height: 40; color: "blue" }
+        Rectangle { width: 40; height: 40; color: "blue" }
+        Rectangle { width: 40; height: 40; color: "blue" }
+        Rectangle { width: 40; height: 40; color: "blue" }
+        Rectangle { width: 40; height: 40; color: "blue" }
+        Rectangle { width: 40; height: 40; color: "blue" }
+        Rectangle { width: 40; height: 40; color: "blue" }
+        Rectangle { width: 40; height: 40; color: "blue" }
+        Rectangle { width: 40; height: 40; color: "blue" }
+        Rectangle { width: 40; height: 40; color: "blue" }
+        Rectangle { width: 40; height: 40; color: "blue" }
+    }
+}
+

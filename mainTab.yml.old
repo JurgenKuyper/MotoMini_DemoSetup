@@ -1,0 +1,36 @@
+mainTab : Column {
+    spacing: 10
+    Row {
+        id: letterRow1
+        Rectangle { width: 40; height: 40; color: "red" }
+        Rectangle { width: 40; height: 40; color: "green" }
+        Rectangle { width: 40; height: 40; color: "blue" }
+        Rectangle { width: 40; height: 40; color: "red" }
+        Rectangle { width: 40; height: 40; color: "green" }
+        Rectangle { width: 40; height: 40; color: "blue" }
+        Rectangle { width: 40; height: 40; color: "red" }
+        Rectangle { width: 40; height: 40; color: "green" }
+        Rectangle { width: 40; height: 40; color: "blue" }
+        Rectangle { width: 40; height: 40; color: "red" }
+        Rectangle { width: 40; height: 40; color: "green" }
+        Rectangle { width: 40; height: 40; color: "blue" }
+        Rectangle { width: 40; height: 40; color: "red" }
+    }
+    Row {
+        id: letterRow2
+        Rectangle { width: 40; height: 40; color: "red" }
+        Rectangle { width: 40; height: 40; color: "green" }
+        Rectangle { width: 40; height: 40; color: "blue" }
+        Rectangle { width: 40; height: 40; color: "red" }
+        Rectangle { width: 40; height: 40; color: "green" }
+        Rectangle { width: 40; height: 40; color: "blue" }
+        Rectangle { width: 40; height: 40; color: "red" }
+        Rectangle { width: 40; height: 40; color: "green" }
+        Rectangle { width: 40; height: 40; color: "blue" }
+        Rectangle { width: 40; height: 40; color: "red" }
+        Rectangle { width: 40; height: 40; color: "green" }
+        Rectangle { width: 40; height: 40; color: "blue" }
+        Rectangle { width: 40; height: 40; color: "red" }
+    }
+}
+

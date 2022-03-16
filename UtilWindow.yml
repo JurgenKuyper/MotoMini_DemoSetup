@@ -1,0 +1,38 @@
+UtilWindow : Utility {
+
+    expandCollapseResize: false
+    collapsedSize: [Const.FullWidth,Const.HalfHeight]
+    expandedSize: [Const.FullWidth,Const.FullHeight]
+    theme: dark
+    // arrange TabBar and TabPanel vertically in a column
+    Column {
+        spacing: 0 // with no spacing between
+        // use full Utility window width, except for 2 x 24 margins
+        width: parent.width - 48
+        // height: parent.height - 48
+        TabBar {
+            id: toptabs
+
+            width: parent.width
+
+            TabButton { id: mainTab; text: "main" }
+            
+            TabButton { id: settingsTab; text: "settings" }
+        }
+
+
+        TabPanel {
+
+            // the tab button bar that selects the active tab panel
+            bar: toptabs
+
+            width: parent.width // panel to width of Column
+            height: 976
+
+            // first panel, use ControlsTab Item declared in ControlsTab.yml
+            MainTab {}
+    
+            SettingsTab {}
+        }
+    } // Column (TabBar/TabPanel)
+}
