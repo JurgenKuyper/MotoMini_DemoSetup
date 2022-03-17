@@ -1,0 +1,15 @@
+/home/jurge/RiderProjects/MotoMini_DemoSetup/obj/Debug/netcoreapp2.2/MotoMini_DemoSetup.csprojAssemblyReference.cache
+/home/jurge/RiderProjects/MotoMini_DemoSetup/obj/Debug/netcoreapp2.2/MotoMini_DemoSetup.csproj.CoreCompileInputs.cache
+/home/jurge/RiderProjects/MotoMini_DemoSetup/obj/Debug/netcoreapp2.2/MotoMini_DemoSetup.AssemblyInfoInputs.cache
+/home/jurge/RiderProjects/MotoMini_DemoSetup/obj/Debug/netcoreapp2.2/MotoMini_DemoSetup.AssemblyInfo.cs
+/home/jurge/RiderProjects/MotoMini_DemoSetup/bin/Debug/netcoreapp2.2/MotoMini_DemoSetup.deps.json
+/home/jurge/RiderProjects/MotoMini_DemoSetup/bin/Debug/netcoreapp2.2/MotoMini_DemoSetup.runtimeconfig.json
+/home/jurge/RiderProjects/MotoMini_DemoSetup/bin/Debug/netcoreapp2.2/MotoMini_DemoSetup.runtimeconfig.dev.json
+/home/jurge/RiderProjects/MotoMini_DemoSetup/bin/Debug/netcoreapp2.2/MotoMini_DemoSetup.dll
+/home/jurge/RiderProjects/MotoMini_DemoSetup/bin/Debug/netcoreapp2.2/MotoMini_DemoSetup.pdb
+/home/jurge/RiderProjects/MotoMini_DemoSetup/bin/Debug/netcoreapp2.2/Thrift.dll
+/home/jurge/RiderProjects/MotoMini_DemoSetup/bin/Debug/netcoreapp2.2/YaskawaExtension.dll
+/home/jurge/RiderProjects/MotoMini_DemoSetup/bin/Debug/netcoreapp2.2/YaskawaExtension.pdb
+/home/jurge/RiderProjects/MotoMini_DemoSetup/obj/Debug/netcoreapp2.2/MotoMini_DemoSetup.csproj.CopyComplete
+/home/jurge/RiderProjects/MotoMini_DemoSetup/obj/Debug/netcoreapp2.2/MotoMini_DemoSetup.dll
+/home/jurge/RiderProjects/MotoMini_DemoSetup/obj/Debug/netcoreapp2.2/MotoMini_DemoSetup.pdb
