@@ -220,7 +220,7 @@ namespace MotoMini_DemoSetup
         {
             var testExtension = new TestExtension();
             testExtension.Run();
-        }
+        } 
         protected Yaskawa.Ext.Extension extension;
         protected Yaskawa.Ext.Pendant pendant;
         protected Yaskawa.Ext.Controller controller;

@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>netcoreapp2.2</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Reference Include="Thrift, Version=0.12.0.1, Culture=neutral, PublicKeyToken=null">
+        <HintPath>..\Jurgen's-SmartPendantSDK\csharp\Thrift.dll</HintPath>
+      </Reference>
+      <Reference Include="YaskawaExtension, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+        <HintPath>..\Jurgen's-SmartPendantSDK\csharp\netcoreapp2.2\YaskawaExtension.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
+</Project>
