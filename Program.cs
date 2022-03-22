@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq.Expressions;
+using System.Threading;
 using System.Timers;
 using Thrift.Collections;
 using Yaskawa.Ext.API;
@@ -20,24 +22,45 @@ namespace MotoMini_DemoSetup
 
             extension = new Yaskawa.Ext.Extension("yeu.test-extension.ext",
                 version, "YEU", languages, "10.0.0.4", 10080);
+            
             apiVersion = extension.apiVersion();
             Console.WriteLine("API version: " + apiVersion);
-
             pendant = extension.pendant();
             extension.subscribeLoggingEvents(); // receive logs from pendant
             extension.copyLoggingToStdOutput = true; // print log() to output
             extension.outputEvents = true; // print out events received
             controller = extension.controller();
             Console.WriteLine("Controller software version:" + controller.softwareVersion());
-        }
-
-        public void Run()
-        {
-            Console.WriteLine(" monitoring? " +
-                              controller.monitoring()); // only monitoring or able to change functions?     
+            Console.WriteLine(" monitoring? " + controller.monitoring()); // only monitoring or able to change functions?     
             Console.WriteLine("Current language:" + pendant.currentLanguage()); // pendant language ISO 693-1 code
             Console.WriteLine("Current locale:" + pendant.currentLocale());
-            Console.WriteLine("Screen Name:" + pendant.currentScreenName());
+        }
+
+        public void setup()
+        {
+            extension.subscribeLoggingEvents();
+            lang = pendant.currentLanguage();
+            localeName = pendant.currentLocale();
+            controller.subscribeEventTypes(new THashSet<ControllerEventType>
+            {
+                ControllerEventType.OperationMode,
+                ControllerEventType.ServoState,
+                ControllerEventType.ActiveTool,
+                ControllerEventType.PlaybackState,
+                ControllerEventType.RemoteMode
+            });
+
+            pendant.subscribeEventTypes(new THashSet<PendantEventType>
+            {
+                PendantEventType.Startup,
+                PendantEventType.Shutdown,
+                PendantEventType.SwitchedScreen,
+                PendantEventType.UtilityOpened,
+                PendantEventType.UtilityClosed,
+                PendantEventType.UtilityMoved,
+                PendantEventType.Clicked
+            });
+            
             List<string> ymlFiles = new List<string>
             {
                 "ControlsTab.yml",
@@ -63,15 +86,6 @@ namespace MotoMini_DemoSetup
             {
                 pendant.registerImageFile(file);
             }
-
-            //string yml = File.ReadAllText("MotoMini_DemoSetup/settings.yml");
-            //var errors = pendant.registerYML(yml);
-            // if (errors.Count > 0) {
-            //     Console.WriteLine("YML Errors encountered:");
-            //     foreach(var e in errors)
-            //         Console.WriteLine("  "+e);
-            // }
-            //pendant.registerUtilityWindow("ymlutil","settings","YML Extension", "YML Extension");
             pendant.registerUtilityWindow(
                 "demoWindow", // id
                 "UtilWindow", // Item type
@@ -82,97 +96,12 @@ namespace MotoMini_DemoSetup
                 "NavPanel", // YML Item type
                 "Demo", // Button label
                 "images/d-icon-256.png"); // Button icon
-            controller.subscribeEventTypes(new THashSet<ControllerEventType>
-            {
-                ControllerEventType.OperationMode,
-                ControllerEventType.ServoState,
-                ControllerEventType.ActiveTool,
-                ControllerEventType.PlaybackState,
-                ControllerEventType.RemoteMode
-            });
-
-            pendant.subscribeEventTypes(new THashSet<PendantEventType>
-            {
-                PendantEventType.Startup,
-                PendantEventType.Shutdown,
-                PendantEventType.SwitchedScreen,
-                PendantEventType.UtilityOpened,
-                PendantEventType.UtilityClosed,
-                PendantEventType.UtilityMoved,
-                PendantEventType.Clicked
-            });
+            pendant.addEventConsumer(PendantEventType.UtilityOpened, onOpened);
             pendant.addItemEventConsumer("settings", PendantEventType.Clicked, onControlsItemClicked);
             pendant.addItemEventConsumer("start", PendantEventType.Clicked, onControlsItemClicked);
-
-            extension.ping();
-
-            //Application.EnableVisualStyles();
-            //utility = new Utility();
-
-
-            //eventPollTimer.AutoReset = true;
-            //eventPollTimer.Tick += new EventHandler(PollForEvents);
-
-            _quit = false;
-            /*eventPollTimer = new System.Timers.Timer(500);
-            pingTimer = new System.Timers.Timer(2000);
-            do {
-                //Application.DoEvents();
-                // pingTimer.Elapsed += new System.Timers.ElapsedEventHandler(PingPendant);
-                // pingTimer.Start();
-                eventPollTimer.Elapsed += new System.Timers.ElapsedEventHandler(PollForEvents);
-                eventPollTimer.Start();
-                
-                //Console.WriteLine(quit);
-            } while (!_quit);
-            eventPollTimer.Enabled = false;*/
-            extension.Dispose();
         }
-
         private int _clickCount = 0;
-
-        /*private void PollForEvents(Object o, EventArgs args)
-        {
-            Any a = new Any();
-            foreach (ControllerEvent e in controller.events()) {
-                Console.Write("ControllerEvent: "+e.EventType);
-                foreach(var p in e.Props) 
-                    Console.Write("   "+p.Key+":"+p.Value);
-                Console.WriteLine();
-            }
-            foreach (PendantEvent e in pendant.events()) 
-            {
-                
-                Console.WriteLine("PendantEvent: "+e.EventType);
-                //Console.WriteLine(e.Props);
-                foreach (var p in e.Props)
-                {
-                    Console.WriteLine("  " + p.Key + ": " + p.Value);
-                }
-                switch (e.EventType)
-                {
-                    case PendantEventType.Clicked:
-                    {
-                        if (String.Equals(e.Props["item"].SValue, "MYBUTTON"))
-                        {
-
-                            a.SValue = "Button clicked " + (++this._clickCount).ToString() + " times.";
-                            pendant.setProperty("mytext", "text", a);
-                            pendant.setProperty("stacktest", "currentIndex", 2);
-                            Console.WriteLine("p.prop: " + pendant.property("mytext", "text"));
-                        }
-                    } break;
-                    case PendantEventType.Shutdown: {
-                        _quit = true;
-                        Console.WriteLine(_quit);
-                    } break;
-                    case PendantEventType.Startup:
-                    {
-                        Console.Write("Pendant started");
-                    } break;
-                }
-            }
-        }*/
+        
         void onControlsItemClicked(PendantEvent e)
         {
             try
@@ -207,24 +136,70 @@ namespace MotoMini_DemoSetup
             }
         }
 
-        private void PingPendant(Object o, EventArgs args)
+        public void onOpened(PendantEvent e)
         {
-            Console.WriteLine("pinging");
-            var x = pendant.events();
-            Console.WriteLine("has pinged {x}");
-            //extension.ping();
-            Console.WriteLine("has pinged");
+            Console.WriteLine("screen opened");
+        }
+        private bool PingPendant()
+        {
+            try
+            {
+                Console.WriteLine("pinging");
+                var x = pendant.events();
+                Console.WriteLine("has pinged {x}");
+                //extension.ping();
+                Console.WriteLine("has pinged");
+                return false;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return true;
+            }
+        }
+
+        public void close()
+        {
+            run = false;
+            extension.Dispose();
         }
 
         static void Main()
         {
+            //var testExtension = new TestExtension();
+            //testExtension.extension.run(testExtension.PingPendant);
+            
             var testExtension = new TestExtension();
-            testExtension.Run();
-        } 
+            // launch
+                
+            try {
+                testExtension.setup();
+            } catch (Exception e) {
+                Console.WriteLine("Extension failed in setup, aborting: "+e.Message);
+                return;
+            }
+
+            // run 'forever' (or until API service shuts down)
+            try {
+                testExtension.extension.run(testExtension.PingPendant);
+            } catch (Exception e) {
+                Console.WriteLine("Exception occured:"+e.Message);
+            }
+
+            finally {
+                if (testExtension != null)
+                    testExtension.close();
+            }
+        }
         protected Yaskawa.Ext.Extension extension;
         protected Yaskawa.Ext.Pendant pendant;
         protected Yaskawa.Ext.Controller controller;
         private bool _quit;
         protected Yaskawa.Ext.Version apiVersion;
+        protected bool run = new bool();
+        protected string lang;
+        protected string localeName;
+        protected CultureInfo locale;
+        protected CultureTypes strings;
     }
 }  
