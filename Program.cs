@@ -41,6 +41,13 @@ namespace MotoMini_DemoSetup
             extension.subscribeLoggingEvents();
             lang = pendant.currentLanguage();
             localeName = pendant.currentLocale();
+            // the dispNotice() function is only present in API >= 2.1, so
+            //  fall-back to notice() function if running on older SP SDK API
+            Yaskawa.Ext.Version requiredMinimumApiVersion = new Yaskawa.Ext.Version(2, 1, 0);
+            if (apiVersion.Nmajor.CompareTo(requiredMinimumApiVersion.Nmajor) >= 0 &&
+                apiVersion.Nminor.CompareTo(requiredMinimumApiVersion.Nminor) >= 0 &&
+                apiVersion.Npatch.CompareTo(requiredMinimumApiVersion.Npatch) >= 0)
+                dispNoticeEnabled = true;
             controller.subscribeEventTypes(new THashSet<ControllerEventType>
             {
                 ControllerEventType.OperationMode,
@@ -97,8 +104,9 @@ namespace MotoMini_DemoSetup
                 "Demo", // Button label
                 "images/d-icon-256.png"); // Button icon
             pendant.addEventConsumer(PendantEventType.UtilityOpened, onOpened);
-            pendant.addItemEventConsumer("settings", PendantEventType.Clicked, onControlsItemClicked);
-            pendant.addItemEventConsumer("start", PendantEventType.Clicked, onControlsItemClicked);
+            pendant.addItemEventConsumer("SETTINGS", PendantEventType.Clicked, onControlsItemClicked);
+            pendant.addItemEventConsumer("START", PendantEventType.Clicked, onControlsItemClicked);
+            pendant.addItemEventConsumer("TextField", PendantEventType.Accepted, onControlsItemClicked);
         }
         private int _clickCount = 0;
         
@@ -110,20 +118,32 @@ namespace MotoMini_DemoSetup
                 if (props.ContainsKey("item"))
                 {
                     var itemName = props["item"].SValue;
-                    // show a notice in reponse to button clicked
-                    if (itemName.Equals("settings"))
+                    Console.WriteLine(itemName);
+                    switch (itemName)
                     {
-                        // the dispNotice() function is only present in API >= 2.1, so
-                        //  fall-back to notice() function if running on older SP SDK API
-                        Yaskawa.Ext.Version requiredMinimumApiVersion = new Yaskawa.Ext.Version(2, 1, 0);
-                        if (apiVersion.Nmajor.CompareTo(requiredMinimumApiVersion.Nmajor) >= 0 && apiVersion.Nminor.CompareTo(requiredMinimumApiVersion.Nminor) >= 0 && apiVersion.Npatch.CompareTo(requiredMinimumApiVersion.Npatch) >= 0)
-                            pendant.dispNotice(Disposition.Positive, "Success", "It worked!");
-                        else
-                            pendant.notice("Success", "It worked!");
-                    }
-                    else if (itemName.Equals("start"))
-                    {
-                        pendant.notice("A Notice", "For your information.");
+                        // show a notice in reponse to button clicked
+                        case "SETTINGS":
+                        {
+                            if (dispNoticeEnabled)
+                                pendant.dispNotice(Disposition.Positive, "Success", "It worked!");
+                            else
+                                pendant.notice("Success", "It worked!");
+                            pendant.setProperty("A", "color", "green");
+                            break;
+                        }
+                        case "START":
+                            if (dispNoticeEnabled)
+                                pendant.dispNotice(Disposition.Positive, "A Notice", "For your information.");
+                            else
+                                pendant.notice("A Notice", "For your information.");
+                            pendant.setProperty("A", "color", "red");
+                            break;
+                        case "TextField":
+                            if (dispNoticeEnabled)
+                                pendant.dispNotice(Disposition.Positive, "word entered: ", props["text"].SValue);
+                            else
+                                pendant.notice("word entered: ",props["text"].SValue);
+                            break;
                     }
 
                 }
@@ -144,11 +164,11 @@ namespace MotoMini_DemoSetup
         {
             try
             {
-                Console.WriteLine("pinging");
-                var x = pendant.events();
-                Console.WriteLine("has pinged {x}");
-                //extension.ping();
-                Console.WriteLine("has pinged");
+                var x = 10;
+                if (x <= 100)
+                {
+                    x += 1;
+                }
                 return false;
             }
             catch (Exception e)
@@ -183,7 +203,7 @@ namespace MotoMini_DemoSetup
             try {
                 testExtension.extension.run(testExtension.PingPendant);
             } catch (Exception e) {
-                Console.WriteLine("Exception occured:"+e.Message);
+                Console.WriteLine("Exception occured:"+e);
             }
 
             finally {
@@ -201,5 +221,6 @@ namespace MotoMini_DemoSetup
         protected string localeName;
         protected CultureInfo locale;
         protected CultureTypes strings;
+        protected private bool dispNoticeEnabled = false;
     }
 }  
