@@ -3,38 +3,34 @@
 // (it will be used in the top-level TabPanel of the Utility window)
 //  It inherits from Column so will arrange child Items vertically and its
 //  height will automatically accomodate all the children
-SettingsTab : Item
+SettingsTab : Row
 {
-    Grid {
+    Column {
         spacing: 10
-        rows: 2
-        columns: 13
-        Rectangle { width: 40; height: 40; color: "blue" }
-        Rectangle { width: 40; height: 40; color: "blue" }
-        Rectangle { width: 40; height: 40; color: "blue" }
-        Rectangle { width: 40; height: 40; color: "blue" }
-        Rectangle { width: 40; height: 40; color: "blue" }
-        Rectangle { width: 40; height: 40; color: "blue" }
-        Rectangle { width: 40; height: 40; color: "blue" }
-        Rectangle { width: 40; height: 40; color: "blue" }
-        Rectangle { width: 40; height: 40; color: "blue" }
-        Rectangle { width: 40; height: 40; color: "blue" }
-        Rectangle { width: 40; height: 40; color: "blue" }
-        Rectangle { width: 40; height: 40; color: "blue" }
-        Rectangle { width: 40; height: 40; color: "blue" }
-        Rectangle { width: 40; height: 40; color: "blue" }
-        Rectangle { width: 40; height: 40; color: "blue" }
-        Rectangle { width: 40; height: 40; color: "blue" }
-        Rectangle { width: 40; height: 40; color: "blue" }
-        Rectangle { width: 40; height: 40; color: "blue" }
-        Rectangle { width: 40; height: 40; color: "blue" }
-        Rectangle { width: 40; height: 40; color: "blue" }
-        Rectangle { width: 40; height: 40; color: "blue" }
-        Rectangle { width: 40; height: 40; color: "blue" }
-        Rectangle { width: 40; height: 40; color: "blue" }
-        Rectangle { width: 40; height: 40; color: "blue" }
-        Rectangle { width: 40; height: 40; color: "blue" }
-        Rectangle { width: 40; height: 40; color: "blue" }
+        Text {
+            text: "Settings: "
+            fontSize: 32
+        }
+        Row {
+            Text {
+                text: "Autonomous mode"
+                fontSize: 24
+            }
+            CheckBox {
+                id: autoCheckBox
+                checked: false
+            }
+        }
+        Row {
+            Text {
+                text: "Placement mode"
+                fontSize: 24
+            }
+            CheckBox {
+                id: placeCheckBox
+                checked: false
+            }
+        }
     }
 }
 

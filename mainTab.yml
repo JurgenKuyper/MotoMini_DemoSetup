@@ -2,7 +2,13 @@ MainTab : Column {
   spacing: 10
   Row {
     id: letterRow1
-    Rectangle {id: A; width: 40; height: 40; color: "blue" }
+    Stack {
+      //count: 2
+      currentIndex: 1
+      id: stacktest
+      Text { text: "A"; color: "white" }
+      Rectangle {id: A; width: 40; height: 40; color: "blue" }
+    }
     Rectangle { width: 40; height: 40; color: "blue" }
     Rectangle { width: 40; height: 40; color: "blue" }
     Rectangle { width: 40; height: 40; color: "blue" }
@@ -44,7 +50,7 @@ MainTab : Column {
     spacing: 128
     id: imagerow
     Column {
-      id: letterCollumn1
+      id: letterColumn1
       Rectangle { radius: 20; width: 40; height: 40; color: "blue"}
       Rectangle { width: 40; height: 40; color: "blue" }
       Rectangle { width: 40; height: 40; color: "blue" }

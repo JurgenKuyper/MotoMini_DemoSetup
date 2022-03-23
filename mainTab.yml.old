@@ -1,36 +1,96 @@
-mainTab : Column {
-    spacing: 10
-    Row {
-        id: letterRow1
-        Rectangle { width: 40; height: 40; color: "red" }
-        Rectangle { width: 40; height: 40; color: "green" }
-        Rectangle { width: 40; height: 40; color: "blue" }
-        Rectangle { width: 40; height: 40; color: "red" }
-        Rectangle { width: 40; height: 40; color: "green" }
-        Rectangle { width: 40; height: 40; color: "blue" }
-        Rectangle { width: 40; height: 40; color: "red" }
-        Rectangle { width: 40; height: 40; color: "green" }
-        Rectangle { width: 40; height: 40; color: "blue" }
-        Rectangle { width: 40; height: 40; color: "red" }
-        Rectangle { width: 40; height: 40; color: "green" }
-        Rectangle { width: 40; height: 40; color: "blue" }
-        Rectangle { width: 40; height: 40; color: "red" }
+MainTab : Column {
+  spacing: 10
+  Row {
+    id: letterRow1
+    Stack {
+      count: 2
+      currentIndex: 0
     }
-    Row {
-        id: letterRow2
-        Rectangle { width: 40; height: 40; color: "red" }
-        Rectangle { width: 40; height: 40; color: "green" }
-        Rectangle { width: 40; height: 40; color: "blue" }
-        Rectangle { width: 40; height: 40; color: "red" }
-        Rectangle { width: 40; height: 40; color: "green" }
-        Rectangle { width: 40; height: 40; color: "blue" }
-        Rectangle { width: 40; height: 40; color: "red" }
-        Rectangle { width: 40; height: 40; color: "green" }
-        Rectangle { width: 40; height: 40; color: "blue" }
-        Rectangle { width: 40; height: 40; color: "red" }
-        Rectangle { width: 40; height: 40; color: "green" }
-        Rectangle { width: 40; height: 40; color: "blue" }
-        Rectangle { width: 40; height: 40; color: "red" }
+    Rectangle {id: A; width: 40; height: 40; color: "blue" }
+    
+    Rectangle { width: 40; height: 40; color: "blue" }
+    Rectangle { width: 40; height: 40; color: "blue" }
+    Rectangle { width: 40; height: 40; color: "blue" }
+    Rectangle { width: 40; height: 40; color: "blue" }
+    Rectangle { width: 40; height: 40; color: "blue" }
+    Rectangle { width: 40; height: 40; color: "blue" }
+    Rectangle { width: 40; height: 40; color: "blue" }
+    Rectangle { width: 40; height: 40; color: "blue" }
+    Rectangle { width: 40; height: 40; color: "blue" }
+    Rectangle { width: 40; height: 40; color: "blue" }
+    Rectangle { width: 40; height: 40; color: "blue" }
+    Rectangle { width: 40; height: 40; color: "blue" }
+  }
+  Row {
+    id: letterRow2
+    Rectangle { width: 40; height: 40; color: "blue" }
+    Rectangle { width: 40; height: 40; color: "blue" }
+    Rectangle { width: 40; height: 40; color: "blue" }
+    Rectangle { width: 40; height: 40; color: "blue" }
+    Rectangle { width: 40; height: 40; color: "blue" }
+    Rectangle { width: 40; height: 40; color: "blue" }
+    Rectangle { width: 40; height: 40; color: "blue" }
+    Rectangle { width: 40; height: 40; color: "blue" }
+    Rectangle { width: 40; height: 40; color: "blue" }
+    Rectangle { width: 40; height: 40; color: "blue" }
+    Rectangle { width: 40; height: 40; color: "blue" }
+    Rectangle { width: 40; height: 40; color: "blue" }
+    Rectangle { width: 40; height: 40; color: "blue" }
+  }
+  Rectangle {
+    width: 1
+    height: 50
+    radius: 5
+    color: "white"
+    borderColor: "white"
+    borderWidth: 2
+  }
+  Row {
+    spacing: 128
+    id: imagerow
+    Column {
+      id: letterColumn1
+      Rectangle { radius: 20; width: 40; height: 40; color: "blue"}
+      Rectangle { width: 40; height: 40; color: "blue" }
+      Rectangle { width: 40; height: 40; color: "blue" }
+      Rectangle { width: 40; height: 40; color: "blue" }
+      Rectangle { width: 40; height: 40; color: "blue" }
+      Rectangle { width: 40; height: 40; color: "blue" }
+      Rectangle { width: 40; height: 40; color: "blue" }
+      Rectangle { width: 40; height: 40; color: "blue" }
+      Rectangle { width: 40; height: 40; color: "blue" }
+      Rectangle { width: 40; height: 40; color: "blue" }
+      Rectangle { width: 40; height: 40; color: "blue" }
+      Rectangle { width: 40; height: 40; color: "blue" }
+      Rectangle { width: 40; height: 40; color: "blue" }
     }
+    Column {
+      Image {
+        id: myimage
+        width: 808/1.6
+        height: 867/1.6
+        source: "images/MotoMini.jpg"
+        fillMode: Const.Stretch
+      }
+      TextField {
+        id: TextField
+        label: "word to build"
+        allowEmpty: false
+        upperBound: 12
+        //placeholderTextColor: "#ff0000"
+        placeholderText: "your word here"
+        alphaInputOnly: true
+        uppercaseInput: true
+      }
+      Button {
+        id: SETTINGS
+        text: "settings"
+      }
+      Button {
+        id: START
+        text: "start"
+        checkable: true
+      }
+    }
+  }    
 }
-

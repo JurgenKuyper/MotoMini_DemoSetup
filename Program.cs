@@ -104,12 +104,19 @@ namespace MotoMini_DemoSetup
                 "Demo", // Button label
                 "images/d-icon-256.png"); // Button icon
             pendant.addEventConsumer(PendantEventType.UtilityOpened, onOpened);
+            controller.addEventConsumer(ControllerEventType.ServoState,controllerEvents);
             pendant.addItemEventConsumer("SETTINGS", PendantEventType.Clicked, onControlsItemClicked);
             pendant.addItemEventConsumer("START", PendantEventType.Clicked, onControlsItemClicked);
             pendant.addItemEventConsumer("TextField", PendantEventType.Accepted, onControlsItemClicked);
+            pendant.addItemEventConsumer("autoCheckBox", PendantEventType.CheckedChanged, onControlsItemClicked);
+            pendant.addItemEventConsumer("placeCheckBox", PendantEventType.CheckedChanged, onControlsItemClicked);
         }
         private int _clickCount = 0;
-        
+
+        void controllerEvents(ControllerEvent e)
+        {
+            Console.WriteLine(e);
+        }
         void onControlsItemClicked(PendantEvent e)
         {
             try
@@ -118,7 +125,7 @@ namespace MotoMini_DemoSetup
                 if (props.ContainsKey("item"))
                 {
                     var itemName = props["item"].SValue;
-                    Console.WriteLine(itemName);
+                    Console.WriteLine("name: " + itemName);
                     switch (itemName)
                     {
                         // show a notice in reponse to button clicked
@@ -129,6 +136,7 @@ namespace MotoMini_DemoSetup
                             else
                                 pendant.notice("Success", "It worked!");
                             pendant.setProperty("A", "color", "green");
+                            //pendant.openUtilityWindow("settingsTab");
                             break;
                         }
                         case "START":
@@ -143,6 +151,12 @@ namespace MotoMini_DemoSetup
                                 pendant.dispNotice(Disposition.Positive, "word entered: ", props["text"].SValue);
                             else
                                 pendant.notice("word entered: ",props["text"].SValue);
+                            break;
+                        case "placeCheckBox":
+                            Console.WriteLine(props["checked"].BValue);
+                            break;
+                        case "autoCheckBox":
+                            Console.WriteLine(props["checked"].BValue);
                             break;
                     }
 
@@ -195,7 +209,7 @@ namespace MotoMini_DemoSetup
             try {
                 testExtension.setup();
             } catch (Exception e) {
-                Console.WriteLine("Extension failed in setup, aborting: "+e.Message);
+                Console.WriteLine("Extension failed in setup, aborting: "+e);
                 return;
             }
 
