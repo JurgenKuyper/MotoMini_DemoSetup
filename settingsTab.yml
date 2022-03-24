@@ -26,9 +26,9 @@ SettingsTab : Row
                 text: "Placement mode"
                 fontSize: 24
             }
-            CheckBox {
-                id: placeCheckBox
-                checked: false
+            ComboBox {
+                id: placeComboBox
+                options: ["Bracelet", "Poles"]
             }
         }
     }

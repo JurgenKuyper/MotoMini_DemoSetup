@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Linq.Expressions;
-using System.Threading;
-using System.Timers;
 using Thrift.Collections;
 using Yaskawa.Ext.API;
 using Version = System.Version;
@@ -13,7 +10,7 @@ using Version = System.Version;
 
 namespace MotoMini_DemoSetup
 {
-    class TestExtension
+    internal class TestExtension
     {
         private TestExtension()
         {
@@ -26,6 +23,7 @@ namespace MotoMini_DemoSetup
             apiVersion = extension.apiVersion();
             Console.WriteLine("API version: " + apiVersion);
             pendant = extension.pendant();
+            
             extension.subscribeLoggingEvents(); // receive logs from pendant
             extension.copyLoggingToStdOutput = true; // print log() to output
             extension.outputEvents = true; // print out events received
@@ -35,8 +33,7 @@ namespace MotoMini_DemoSetup
             Console.WriteLine("Current language:" + pendant.currentLanguage()); // pendant language ISO 693-1 code
             Console.WriteLine("Current locale:" + pendant.currentLocale());
         }
-
-        public void setup()
+        private void Setup()
         {
             extension.subscribeLoggingEvents();
             lang = pendant.currentLanguage();
@@ -93,6 +90,7 @@ namespace MotoMini_DemoSetup
             {
                 pendant.registerImageFile(file);
             }
+            
             pendant.registerUtilityWindow(
                 "demoWindow", // id
                 "UtilWindow", // Item type
@@ -103,86 +101,89 @@ namespace MotoMini_DemoSetup
                 "NavPanel", // YML Item type
                 "Demo", // Button label
                 "images/d-icon-256.png"); // Button icon
-            pendant.addEventConsumer(PendantEventType.UtilityOpened, onOpened);
+            pendant.addEventConsumer(PendantEventType.UtilityOpened, OnOpened);
             controller.addEventConsumer(ControllerEventType.ServoState,controllerEvents);
-            pendant.addItemEventConsumer("SETTINGS", PendantEventType.Clicked, onControlsItemClicked);
-            pendant.addItemEventConsumer("START", PendantEventType.Clicked, onControlsItemClicked);
-            pendant.addItemEventConsumer("TextField", PendantEventType.Accepted, onControlsItemClicked);
-            pendant.addItemEventConsumer("autoCheckBox", PendantEventType.CheckedChanged, onControlsItemClicked);
-            pendant.addItemEventConsumer("placeCheckBox", PendantEventType.CheckedChanged, onControlsItemClicked);
+            pendant.addItemEventConsumer("SETTINGS", PendantEventType.Clicked, OnControlsItemClicked);
+            pendant.addItemEventConsumer("START", PendantEventType.Clicked, OnControlsItemClicked);
+            pendant.addItemEventConsumer("TextField", PendantEventType.Accepted, OnControlsItemClicked);
+            pendant.addItemEventConsumer("autoCheckBox", PendantEventType.CheckedChanged, OnControlsItemClicked);
+            pendant.addItemEventConsumer("placeComboBox", PendantEventType.Activated, OnControlsItemClicked);
         }
-        private int _clickCount = 0;
-
         void controllerEvents(ControllerEvent e)
         {
             Console.WriteLine(e);
         }
-        void onControlsItemClicked(PendantEvent e)
+        void OnControlsItemClicked(PendantEvent e)
         {
             try
             {
                 var props = e.Props;
-                if (props.ContainsKey("item"))
+                if (!props.ContainsKey("item")) return;
+                var itemName = props["item"].SValue;
+                Console.WriteLine("name: " + itemName);
+                switch (itemName)
                 {
-                    var itemName = props["item"].SValue;
-                    Console.WriteLine("name: " + itemName);
-                    switch (itemName)
+                    // show a notice in response to button clicked
+                    case "SETTINGS":
                     {
-                        // show a notice in reponse to button clicked
-                        case "SETTINGS":
-                        {
-                            if (dispNoticeEnabled)
-                                pendant.dispNotice(Disposition.Positive, "Success", "It worked!");
-                            else
-                                pendant.notice("Success", "It worked!");
-                            pendant.setProperty("A", "color", "green");
-                            //pendant.openUtilityWindow("settingsTab");
-                            break;
-                        }
-                        case "START":
-                            if (dispNoticeEnabled)
-                                pendant.dispNotice(Disposition.Positive, "A Notice", "For your information.");
-                            else
-                                pendant.notice("A Notice", "For your information.");
-                            pendant.setProperty("A", "color", "red");
-                            break;
-                        case "TextField":
-                            if (dispNoticeEnabled)
-                                pendant.dispNotice(Disposition.Positive, "word entered: ", props["text"].SValue);
-                            else
-                                pendant.notice("word entered: ",props["text"].SValue);
-                            break;
-                        case "placeCheckBox":
-                            Console.WriteLine(props["checked"].BValue);
-                            break;
-                        case "autoCheckBox":
-                            Console.WriteLine(props["checked"].BValue);
-                            break;
+                        if (dispNoticeEnabled)
+                            pendant.dispNotice(Disposition.Positive, "Success", "It worked!");
+                        else
+                            pendant.notice("Success", "It worked!");
+                        //pendant.openUtilityWindow("settingsTab");
+                        pendant.setProperty("TabBar", "currentIndex", 1);
+                        break;
                     }
-
+                    case "START":
+                    {
+                        if (props["pressed"].BValue)
+                            pressed = true;
+                        pressed = false;
+                        break;
+                    }
+                    case "TextField":
+                    {
+                        if (dispNoticeEnabled)
+                            pendant.dispNotice(Disposition.Positive, "word entered: ", props["text"].SValue);
+                        else
+                            pendant.notice("word entered: ", props["text"].SValue);
+                        wordString = props["text"].SValue;
+                        Console.WriteLine(wordString);
+                        break;
+                    }
+                    case "placeComboBox":
+                    {
+                        foreach (var p in e.Props)
+                            Console.Write("   " + p.Key + ":" + p.Value);
+                        Console.WriteLine(props["index"].IValue);
+                        PlacementMode = props["index"].IValue == 1;
+                        break;
+                    }
+                    case "autoCheckBox":
+                    {
+                        Console.WriteLine(props["checked"].BValue);
+                        AutonomousMode = props["checked"].BValue;
+                        break;
+                    }
                 }
-
             }
             catch (Exception ex)
             {
                 // display error
-                Console.WriteLine("Unable to process Clicked event :" + ex.Message);
+                Console.WriteLine("Unable to process Clicked event :" + ex);
             }
         }
 
-        public void onOpened(PendantEvent e)
+        private static void OnOpened(PendantEvent e)
         {
             Console.WriteLine("screen opened");
         }
-        private bool PingPendant()
+
+        private static bool PingPendant()
         {
             try
             {
-                var x = 10;
-                if (x <= 100)
-                {
-                    x += 1;
-                }
+                //CheckStatus();
                 return false;
             }
             catch (Exception e)
@@ -191,14 +192,67 @@ namespace MotoMini_DemoSetup
                 return true;
             }
         }
+        private void CheckStatus()
+        {
+            if (pressed)
+            {
+                if (dispNoticeEnabled)
+                    pendant.dispNotice(Disposition.Positive, "A Notice", "For your information.");
+                else
+                    pendant.notice("A Notice", "For your information.");
+                switch (AutonomousMode)
+                {
+                    case true:
+                    {
+                        foreach (var word in words)
+                        {
+                            //BuildWord(word, PlacementMode);
+                            //pendant.setProperty(("pole"), "color", "blue");
+                            for (var element = 0; element < 12; element++)
+                            {
+                                pendant.setProperty(("place" + element), "color", "blue");
+                            }
+                            //Thread.Sleep(1000);
+                        }
 
-        public void close()
+                        break;
+                    }
+                    case false:
+                    {
+                        BuildWord(wordString, PlacementMode);
+                        break;
+                    }
+                }
+            }
+        }
+
+        private void Close()
         {
             run = false;
             extension.Dispose();
         }
 
-        static void Main()
+        private void BuildWord(string word, bool buildType)
+        {
+            var position = "pole";
+            for(var t = 0; t < word.Length; t++)
+            {
+                pendant.setProperty(word[t].ToString(), "color", "orange");
+                //controller.variableByAddr("I001");
+                if (buildType)
+                {
+                    position = "place";
+                    pendant.setProperty((position + t), "color", "orange");
+                }
+                else
+                {
+                    pendant.setProperty((position), "color", "orange");
+                }
+                pendant.setProperty(word[t].ToString(), "color", "blue");
+            }
+        }
+
+        private static void Main()
         {
             //var testExtension = new TestExtension();
             //testExtension.extension.run(testExtension.PingPendant);
@@ -207,7 +261,7 @@ namespace MotoMini_DemoSetup
             // launch
                 
             try {
-                testExtension.setup();
+                testExtension.Setup();
             } catch (Exception e) {
                 Console.WriteLine("Extension failed in setup, aborting: "+e);
                 return;
@@ -215,26 +269,44 @@ namespace MotoMini_DemoSetup
 
             // run 'forever' (or until API service shuts down)
             try {
-                testExtension.extension.run(testExtension.PingPendant);
+                testExtension.extension.run(PingPendant);
             } catch (Exception e) {
                 Console.WriteLine("Exception occured:"+e);
             }
 
             finally {
                 if (testExtension != null)
-                    testExtension.close();
+                    testExtension.Close();
             }
         }
-        protected Yaskawa.Ext.Extension extension;
-        protected Yaskawa.Ext.Pendant pendant;
-        protected Yaskawa.Ext.Controller controller;
+
+        private Yaskawa.Ext.Extension extension;
+        private Yaskawa.Ext.Pendant pendant;
+        private Yaskawa.Ext.Controller controller;
         private bool _quit;
-        protected Yaskawa.Ext.Version apiVersion;
-        protected bool run = new bool();
-        protected string lang;
-        protected string localeName;
+        private Yaskawa.Ext.Version apiVersion;
+        private bool run = new bool();
+        private string wordString;
+        private string lang;
+        private string localeName;
+        private bool PlacementMode;
+        private bool AutonomousMode;
         protected CultureInfo locale;
         protected CultureTypes strings;
-        protected private bool dispNoticeEnabled = false;
+        protected bool dispNoticeEnabled = false;
+        protected bool pressed = false;
+        private List<string> words = new List<string>
+        {
+            "YASKAWA",
+            "ATOMETIZING",
+            "MECHATRONICS",
+            "ROBOTICS",
+            "YOLO",
+            "LABORATORY",
+            "FABULOUSNESS",
+            "AGREGATIONS",
+            "ALPHANUMERIC",
+            "ANTIMAGNETIC"
+        };
     }
 }  
