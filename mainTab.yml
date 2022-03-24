@@ -1,26 +1,40 @@
+LetterSquare : Item
+{
+  property alias letter: textBox.text
+  property alias color: letterSquare.color
+  Rectangle
+  {
+    id: letterSquare
+    width: 40
+    height: 40
+  }
+  Text
+  {
+    id: textBox
+      color: "white"
+      fontSize: 24
+      fontWeight: Const.Bold
+      text: "A"
+      x: 12
+      y: 7
+  }
+}
 MainTab : Column {
-  spacing: 10
   Row {
     id: letterRow1
-    Stack {
-      //count: 2
-      currentIndex: 1
-      id: stacktest
-      Text { text: "A"; color: "white" }
-      Rectangle {id: A; width: 40; height: 40; color: "blue" }
-    }
-    Rectangle { width: 40; height: 40; color: "blue" }
-    Rectangle { width: 40; height: 40; color: "blue" }
-    Rectangle { width: 40; height: 40; color: "blue" }
-    Rectangle { width: 40; height: 40; color: "blue" }
-    Rectangle { width: 40; height: 40; color: "blue" }
-    Rectangle { width: 40; height: 40; color: "blue" }
-    Rectangle { width: 40; height: 40; color: "blue" }
-    Rectangle { width: 40; height: 40; color: "blue" }
-    Rectangle { width: 40; height: 40; color: "blue" }
-    Rectangle { width: 40; height: 40; color: "blue" }
-    Rectangle { width: 40; height: 40; color: "blue" }
-    Rectangle { width: 40; height: 40; color: "blue" }
+    LetterSquare {id: A; letter: "A"; color: "blue"}
+    LetterSquare {id: B; letter: "B"; color: "blue"}
+    LetterSquare {id: C; letter: "C"; color: "blue"}
+    LetterSquare {id: D; letter: "D"; color: "blue"}
+    LetterSquare {id: E; letter: "E"; color: "blue"}
+    LetterSquare {id: F; letter: "F"; color: "blue"}
+    LetterSquare {id: G; letter: "G"; color: "blue"}
+    LetterSquare {id: H; letter: "H"; color: "blue"}
+    LetterSquare {id: I; letter: "I"; color: "blue"}
+    LetterSquare {id: J; letter: "J"; color: "blue"}
+    LetterSquare {id: K; letter: "K"; color: "blue"}
+    LetterSquare {id: L; letter: "L"; color: "blue"}
+    LetterSquare {id: M; letter: "M"; color: "blue"}
   }
   Row {
     id: letterRow2
