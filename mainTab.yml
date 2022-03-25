@@ -20,34 +20,20 @@ LetterSquare : Item
 }
 MainTab : Column {
   Row {
-    spacing: 0
     id: letterRow1
-    LetterSquare {id: A; letter: "A"; color: "blue"}
-    LetterSquare {id: B; letter: "B"; color: "blue"}
-    LetterSquare {id: C; letter: "C"; color: "blue"}
-    LetterSquare {id: D; letter: "D"; color: "blue"}
-    LetterSquare {id: E; letter: "E"; color: "blue"}
-    LetterSquare {id: F; letter: "F"; color: "blue"}
-    LetterSquare {id: G; letter: "G"; color: "blue"}
-    LetterSquare {id: H; letter: "H"; color: "blue"}
-    LetterSquare {id: I; letter: "I"; color: "blue"}
-    LetterSquare {id: J; letter: "J"; color: "blue"}
-    LetterSquare {id: K; letter: "K"; color: "blue"}
-    LetterSquare {id: L; letter: "L"; color: "blue"}
-    LetterSquare {id: M; letter: "M"; color: "blue"}
-    //Rectangle { id: A; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: "A"; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
-    //Rectangle { id: B; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: "B"; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
-    //Rectangle { id: C; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: "C"; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
-    //Rectangle { id: D; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: "D"; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
-    //Rectangle { id: E; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: "E"; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
-    //Rectangle { id: F; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: "F"; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
-    //Rectangle { id: G; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: "G"; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
-    //Rectangle { id: H; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: "H"; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
-    //Rectangle { id: I; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: "I"; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
-    //Rectangle { id: J; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: "J"; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
-    //Rectangle { id: K; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: "K"; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
-    //Rectangle { id: L; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: "L"; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
-    //Rectangle { id: M; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: "M"; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
+    Rectangle { id: A; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: "A"; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
+    Rectangle { id: B; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: "B"; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
+    Rectangle { id: C; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: "C"; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
+    Rectangle { id: D; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: "D"; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
+    Rectangle { id: E; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: "E"; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
+    Rectangle { id: F; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: "F"; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
+    Rectangle { id: G; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: "G"; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
+    Rectangle { id: H; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: "H"; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
+    Rectangle { id: I; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: "I"; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
+    Rectangle { id: J; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: "J"; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
+    Rectangle { id: K; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: "K"; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
+    Rectangle { id: L; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: "L"; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
+    Rectangle { id: M; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: "M"; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
   }
   Row {
     id: letterRow2
@@ -65,13 +51,29 @@ MainTab : Column {
     Rectangle { id: Y; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: "Y"; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
     Rectangle { id: Z; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: "Z"; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
   }
-  Rectangle {
-    width: 1
-    height: 50
-    radius: 5
-    color: "white"
-    borderColor: "white"
-    borderWidth: 2
+  Row {
+    id: imageRow
+    Text {
+        id: percentageText
+        fontSize: 76
+        text: "0%"
+    }
+    Image {
+        id: autoButtonImage
+        width: 516/6
+        height: 516/6
+        source: "images/green-button-off.png"
+        fillMode: Const.Stretch
+    }
+    Column {
+      Image {
+         id: startButtonImage
+         width: 516/6
+         height: 516/6
+         source: "images/red-button-off.png"
+         fillMode: Const.Stretch
+      }
+    }
   }
   Row {
     spacing: 128

@@ -1,41 +1,55 @@
+LetterSquare : Item
+{
+  property alias letter: textBox.text
+  property alias color: letterSquare.color
+  Rectangle
+  {
+    id: letterSquare
+    width: 40
+    height: 40
+    Text
+    {
+      id: textBox
+      color: "white"
+      fontSize: 24
+      fontWeight: Const.Bold
+      text: "A"
+      centerIn: parent
+    }
+  }
+}
 MainTab : Column {
-  spacing: 10
   Row {
     id: letterRow1
-    Stack {
-      count: 2
-      currentIndex: 0
-    }
-    Rectangle {id: A; width: 40; height: 40; color: "blue" }
-    
-    Rectangle { width: 40; height: 40; color: "blue" }
-    Rectangle { width: 40; height: 40; color: "blue" }
-    Rectangle { width: 40; height: 40; color: "blue" }
-    Rectangle { width: 40; height: 40; color: "blue" }
-    Rectangle { width: 40; height: 40; color: "blue" }
-    Rectangle { width: 40; height: 40; color: "blue" }
-    Rectangle { width: 40; height: 40; color: "blue" }
-    Rectangle { width: 40; height: 40; color: "blue" }
-    Rectangle { width: 40; height: 40; color: "blue" }
-    Rectangle { width: 40; height: 40; color: "blue" }
-    Rectangle { width: 40; height: 40; color: "blue" }
-    Rectangle { width: 40; height: 40; color: "blue" }
+    Rectangle { id: A; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: "A"; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
+    Rectangle { id: B; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: "B"; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
+    Rectangle { id: C; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: "C"; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
+    Rectangle { id: D; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: "D"; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
+    Rectangle { id: E; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: "E"; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
+    Rectangle { id: F; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: "F"; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
+    Rectangle { id: G; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: "G"; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
+    Rectangle { id: H; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: "H"; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
+    Rectangle { id: I; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: "I"; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
+    Rectangle { id: J; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: "J"; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
+    Rectangle { id: K; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: "K"; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
+    Rectangle { id: L; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: "L"; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
+    Rectangle { id: M; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: "M"; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
   }
   Row {
     id: letterRow2
-    Rectangle { width: 40; height: 40; color: "blue" }
-    Rectangle { width: 40; height: 40; color: "blue" }
-    Rectangle { width: 40; height: 40; color: "blue" }
-    Rectangle { width: 40; height: 40; color: "blue" }
-    Rectangle { width: 40; height: 40; color: "blue" }
-    Rectangle { width: 40; height: 40; color: "blue" }
-    Rectangle { width: 40; height: 40; color: "blue" }
-    Rectangle { width: 40; height: 40; color: "blue" }
-    Rectangle { width: 40; height: 40; color: "blue" }
-    Rectangle { width: 40; height: 40; color: "blue" }
-    Rectangle { width: 40; height: 40; color: "blue" }
-    Rectangle { width: 40; height: 40; color: "blue" }
-    Rectangle { width: 40; height: 40; color: "blue" }
+    Rectangle { id: N; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: "N"; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
+    Rectangle { id: O; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: "O"; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
+    Rectangle { id: P; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: "P"; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
+    Rectangle { id: Q; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: "Q"; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
+    Rectangle { id: R; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: "R"; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
+    Rectangle { id: S; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: "S"; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
+    Rectangle { id: T; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: "T"; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
+    Rectangle { id: U; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: "U"; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
+    Rectangle { id: V; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: "V"; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
+    Rectangle { id: W; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: "W"; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
+    Rectangle { id: X; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: "X"; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
+    Rectangle { id: Y; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: "Y"; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
+    Rectangle { id: Z; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: "Z"; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
   }
   Rectangle {
     width: 1
@@ -50,19 +64,19 @@ MainTab : Column {
     id: imagerow
     Column {
       id: letterColumn1
-      Rectangle { radius: 20; width: 40; height: 40; color: "blue"}
-      Rectangle { width: 40; height: 40; color: "blue" }
-      Rectangle { width: 40; height: 40; color: "blue" }
-      Rectangle { width: 40; height: 40; color: "blue" }
-      Rectangle { width: 40; height: 40; color: "blue" }
-      Rectangle { width: 40; height: 40; color: "blue" }
-      Rectangle { width: 40; height: 40; color: "blue" }
-      Rectangle { width: 40; height: 40; color: "blue" }
-      Rectangle { width: 40; height: 40; color: "blue" }
-      Rectangle { width: 40; height: 40; color: "blue" }
-      Rectangle { width: 40; height: 40; color: "blue" }
-      Rectangle { width: 40; height: 40; color: "blue" }
-      Rectangle { width: 40; height: 40; color: "blue" }
+      Rectangle { id: pole; radius: 20; width: 40; height: 40; color: "blue"}
+      Rectangle { id: place0; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: " "; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
+      Rectangle { id: place1; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: " "; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
+      Rectangle { id: place2; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: " "; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
+      Rectangle { id: place3; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: " "; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
+      Rectangle { id: place4; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: " "; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
+      Rectangle { id: place5; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: " "; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
+      Rectangle { id: place6; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: " "; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
+      Rectangle { id: place7; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: " "; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
+      Rectangle { id: place8; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: " "; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
+      Rectangle { id: place9; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: " "; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
+      Rectangle { id: place10; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: " "; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
+      Rectangle { id: place11; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: " "; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
     }
     Column {
       Image {
@@ -81,6 +95,7 @@ MainTab : Column {
         placeholderText: "your word here"
         alphaInputOnly: true
         uppercaseInput: true
+        allowedChars: "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
       }
       Button {
         id: SETTINGS

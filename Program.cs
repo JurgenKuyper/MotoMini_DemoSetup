@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Runtime.InteropServices;
+using System.Threading;
 using Thrift.Collections;
 using Yaskawa.Ext.API;
 using Version = System.Version;
@@ -108,7 +110,9 @@ namespace MotoMini_DemoSetup
             pendant.addItemEventConsumer("TextField", PendantEventType.Accepted, OnControlsItemClicked);
             pendant.addItemEventConsumer("autoCheckBox", PendantEventType.CheckedChanged, OnControlsItemClicked);
             pendant.addItemEventConsumer("placeComboBox", PendantEventType.Activated, OnControlsItemClicked);
+            pendant.addItemEventConsumer("MainButton",PendantEventType.Clicked, OnControlsItemClicked);
         }
+        
         void controllerEvents(ControllerEvent e)
         {
             Console.WriteLine(e);
@@ -123,22 +127,68 @@ namespace MotoMini_DemoSetup
                 Console.WriteLine("name: " + itemName);
                 switch (itemName)
                 {
-                    // show a notice in response to button clicked
+                    case "MainButton":
+                    {
+                        pendant.setProperty("TabBar", "currentIndex", 0);
+                        break;
+                    }
                     case "SETTINGS":
                     {
-                        if (dispNoticeEnabled)
-                            pendant.dispNotice(Disposition.Positive, "Success", "It worked!");
-                        else
-                            pendant.notice("Success", "It worked!");
                         //pendant.openUtilityWindow("settingsTab");
                         pendant.setProperty("TabBar", "currentIndex", 1);
                         break;
                     }
                     case "START":
                     {
-                        if (props["pressed"].BValue)
+                        pendant.setProperty(("pole"), "color", "blue");
+                        for (var element = 0; element < 12; element++)
+                        {
+                            pendant.setProperty(("place" + element), "color", "blue");
+                        }
+                        if (dispNoticeEnabled)
+                            pendant.dispNotice(Disposition.Positive, "Started sequence", "It worked!");
+                        else
+                            pendant.notice("Started sequence", "It worked!");
+                        if (props["checked"].BValue)
+                        {
                             pressed = true;
-                        pressed = false;
+                            pendant.setProperty("startButtonImage", "source", "images/red-button-on.png");
+                        }
+
+                        if (!props["checked"].BValue)
+                        {
+                            pressed = false;
+                            pendant.setProperty("startButtonImage", "source", "images/red-button-off.png");
+                        }
+                        switch (AutonomousMode)
+                        {
+                            case true:
+                            {
+                                RunAutonomously();
+                                Console.WriteLine("started");
+                                foreach (PendantEvent ev in pendant.events())
+                                {
+                                    if (!ev.Props.ContainsKey("item")) return;
+                                    var item = ev.Props["item"].SValue;
+                                    if (item == "START")
+                                    {
+                                        if (!ev.Props["checked"].BValue)
+                                        {
+                                            pendant.setProperty("startButtonImage", "source", "images/red-button-off.png");
+                                            Console.WriteLine("recieved shutdown");
+                                            break;
+                                        }
+                                    }
+                                }
+                                RunAutonomously();
+                                break;
+                            }
+                            case false:
+                            {
+                                BuildWord(wordString, PlacementMode);
+                                break;
+                            }
+                        }
                         break;
                     }
                     case "TextField":
@@ -163,6 +213,19 @@ namespace MotoMini_DemoSetup
                     {
                         Console.WriteLine(props["checked"].BValue);
                         AutonomousMode = props["checked"].BValue;
+                        switch (AutonomousMode)
+                        {
+                            case true:
+                            {
+                                pendant.setProperty("autoButtonImage", "source", "images/green-button-on.png");
+                                break;
+                            }
+                            case false:
+                            {
+                                pendant.setProperty("autoButtonImage", "source", "images/green-button-off.png");
+                                break;
+                            }
+                        }
                         break;
                     }
                 }
@@ -192,37 +255,17 @@ namespace MotoMini_DemoSetup
                 return true;
             }
         }
-        private void CheckStatus()
+        private static void RunAutonomously()
         {
-            if (pressed)
+            foreach (var word in words)
             {
-                if (dispNoticeEnabled)
-                    pendant.dispNotice(Disposition.Positive, "A Notice", "For your information.");
-                else
-                    pendant.notice("A Notice", "For your information.");
-                switch (AutonomousMode)
+                BuildStaticWord(word);
+                //pendant.setProperty(("pole"), "color", "blue");
+                for (var element = 0; element < 12; element++)
                 {
-                    case true:
-                    {
-                        foreach (var word in words)
-                        {
-                            //BuildWord(word, PlacementMode);
-                            //pendant.setProperty(("pole"), "color", "blue");
-                            for (var element = 0; element < 12; element++)
-                            {
-                                pendant.setProperty(("place" + element), "color", "blue");
-                            }
-                            //Thread.Sleep(1000);
-                        }
-
-                        break;
-                    }
-                    case false:
-                    {
-                        BuildWord(wordString, PlacementMode);
-                        break;
-                    }
+                    pendant.setProperty(("place" + element), "color", "blue");
                 }
+                //Thread.Sleep(1000);
             }
         }
 
@@ -231,7 +274,18 @@ namespace MotoMini_DemoSetup
             run = false;
             extension.Dispose();
         }
-
+        private static void BuildStaticWord(string word)
+        {
+            for(var l = 0; l < word.Length; l++)
+            {
+                pendant.setProperty("percentageText","text",l*100/word.Length+"%");
+                pendant.setProperty(word[l].ToString(), "color", "orange");
+                //controller.variableByAddr("I001");
+                pendant.setProperty("place" + l, "color", "orange");
+                pendant.setProperty(word[l].ToString(), "color", "blue");
+            }
+            pendant.setProperty("percentageText","text","100%");
+        }
         private void BuildWord(string word, bool buildType)
         {
             var position = "pole";
@@ -243,13 +297,16 @@ namespace MotoMini_DemoSetup
                 {
                     position = "place";
                     pendant.setProperty((position + t), "color", "orange");
+                    pendant.setProperty("percentageText","text",t*100/word.Length+"%");
                 }
                 else
                 {
                     pendant.setProperty((position), "color", "orange");
+                    pendant.setProperty("percentageText","text",t*100/word.Length+"%");
                 }
                 pendant.setProperty(word[t].ToString(), "color", "blue");
             }
+            pendant.setProperty("percentageText","text","100%");
         }
 
         private static void Main()
@@ -281,7 +338,7 @@ namespace MotoMini_DemoSetup
         }
 
         private Yaskawa.Ext.Extension extension;
-        private Yaskawa.Ext.Pendant pendant;
+        private static Yaskawa.Ext.Pendant pendant;
         private Yaskawa.Ext.Controller controller;
         private bool _quit;
         private Yaskawa.Ext.Version apiVersion;
@@ -295,7 +352,7 @@ namespace MotoMini_DemoSetup
         protected CultureTypes strings;
         protected bool dispNoticeEnabled = false;
         protected bool pressed = false;
-        private List<string> words = new List<string>
+        private static List<string> words = new List<string>
         {
             "YASKAWA",
             "ATOMETIZING",
@@ -308,5 +365,6 @@ namespace MotoMini_DemoSetup
             "ALPHANUMERIC",
             "ANTIMAGNETIC"
         };
+        Thread t = new Thread(RunAutonomously);
     }
 }  

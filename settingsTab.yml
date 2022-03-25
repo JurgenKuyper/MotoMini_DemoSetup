@@ -31,6 +31,10 @@ SettingsTab : Row
                 options: ["Bracelet", "Poles"]
             }
         }
+        Button {
+            id: MainButton
+            text: "Main Tab"
+        }
     }
 }
 

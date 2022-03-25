@@ -11,8 +11,8 @@ UtilWindow : Utility {
         width: parent.width - 48
         // height: parent.height - 48
         TabBar {
-            id: toptabs
-
+            id: TabBar
+            currentIndex: 0
             width: parent.width
 
             TabButton { id: mainTab; text: "main" }
@@ -24,7 +24,7 @@ UtilWindow : Utility {
         TabPanel {
 
             // the tab button bar that selects the active tab panel
-            bar: toptabs
+            bar: TabBar
 
             width: parent.width // panel to width of Column
             height: 976
