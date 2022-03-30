@@ -20,7 +20,9 @@ namespace MotoMini_DemoSetup
             var languages = new HashSet<string> {"en", "ja"};
 
             extension = new Yaskawa.Ext.Extension("yeu.test-extension.ext",
-                version, "YEU", languages, "10.0.0.4", 10080);
+                 version, "YEU", languages, "10.0.0.4", 10080);
+            // extension = new Yaskawa.Ext.Extension("yeu.test-extension.ext",
+            //     version, "YEU", languages, "localhost", 10080);
             
             apiVersion = extension.apiVersion();
             Console.WriteLine("API version: " + apiVersion);
@@ -111,8 +113,45 @@ namespace MotoMini_DemoSetup
             pendant.addItemEventConsumer("autoCheckBox", PendantEventType.CheckedChanged, OnControlsItemClicked);
             pendant.addItemEventConsumer("placeComboBox", PendantEventType.Activated, OnControlsItemClicked);
             pendant.addItemEventConsumer("MainButton",PendantEventType.Clicked, OnControlsItemClicked);
+            addVariables();
         }
-        
+
+        void addVariables()
+        {
+            letterPlaced.Aspace = AddressSpace.Int;
+            StartVariable.Aspace = AddressSpace.Byte;
+            L0.Aspace = AddressSpace.Byte;
+            L1.Aspace = AddressSpace.Byte;
+            L2.Aspace = AddressSpace.Byte;
+            L3.Aspace = AddressSpace.Byte;
+            L4.Aspace = AddressSpace.Byte;
+            L5.Aspace = AddressSpace.Byte;
+            L6.Aspace = AddressSpace.Byte;
+            L7.Aspace = AddressSpace.Byte;
+            L8.Aspace = AddressSpace.Byte;
+            L9.Aspace = AddressSpace.Byte;
+            L10.Aspace = AddressSpace.Byte;
+            L11.Aspace = AddressSpace.Byte;
+            placeMode.Aspace = AddressSpace.Byte;
+            Errors.Aspace = AddressSpace.Byte;
+
+            letterPlaced.Address = 27;
+            StartVariable.Address = 0;
+            L0.Address = 1;
+            L1.Address = 2;
+            L2.Address = 3;
+            L3.Address = 4;
+            L4.Address = 5;
+            L5.Address = 6;
+            L6.Address = 7;
+            L7.Address = 8;
+            L8.Address = 9;
+            L9.Address = 10;
+            L10.Address = 11;
+            L11.Address = 12;
+            placeMode.Address = 13;
+            Errors.Address = 14;
+        }
         void controllerEvents(ControllerEvent e)
         {
             Console.WriteLine(e);
@@ -255,7 +294,7 @@ namespace MotoMini_DemoSetup
                 return true;
             }
         }
-        private static void RunAutonomously()
+        private void RunAutonomously()
         {
             foreach (var word in words)
             {
@@ -274,14 +313,33 @@ namespace MotoMini_DemoSetup
             run = false;
             extension.Dispose();
         }
-        private static void BuildStaticWord(string word)
+        private void BuildStaticWord(string word)
         {
+            if (word.Length < 12)
+            {
+                word = word.PadRight(12);
+                Console.WriteLine(word);
+            }
+            List<Any> wordList = new List<Any>() {letter0, letter1, letter2, letter3, letter4, letter5, letter6, 
+                letter7, letter8, letter9, letter10, letter11};
+            List<VariableAddress> addressList = new List<VariableAddress>() {L0, L1, L2, L3, L4, L5, L6, L7, L8, L9, L10, L11};
+            for(int letter = 0; letter < wordList.Count; letter++)
+            {
+                var letterInt = char.ToUpper(word[letter]) - 65;
+                if (letterInt == -33)
+                    letterInt = 41;
+                Console.WriteLine(letterInt);
+                wordList[letter].IValue = letterInt;
+                controller.setVariableByAddr(addressList[letter], wordList[letter]);
+            }
+            controller.setVariableByAddr(placeMode,1);
             for(var l = 0; l < word.Length; l++)
             {
                 pendant.setProperty("percentageText","text",l*100/word.Length+"%");
                 pendant.setProperty(word[l].ToString(), "color", "orange");
-                //controller.variableByAddr("I001");
                 pendant.setProperty("place" + l, "color", "orange");
+                while (!controller.variableByAddr(letterPlaced).BValue)
+                    Thread.Sleep(2000);
                 pendant.setProperty(word[l].ToString(), "color", "blue");
             }
             pendant.setProperty("percentageText","text","100%");
@@ -289,6 +347,24 @@ namespace MotoMini_DemoSetup
         private void BuildWord(string word, bool buildType)
         {
             var position = "pole";
+            if (word.Length < 12)
+            {
+                word = word.PadRight(12);
+                Console.WriteLine(word);
+            }
+            List<Any> wordList = new List<Any>() {letter0, letter1, letter2, letter3, letter4, letter5, letter6, 
+                letter7, letter8, letter9, letter10, letter11};
+            List<VariableAddress> addressList = new List<VariableAddress>() {L0, L1, L2, L3, L4, L5, L6, L7, L8, L9, L10, L11};
+            for(int letter = 0; letter < wordList.Count; letter++)
+            {
+                var letterInt = char.ToUpper(word[letter]) - 65;
+                if (letterInt == -33)
+                    letterInt = 41;
+                Console.WriteLine(letterInt);
+                wordList[letter].IValue = letterInt;
+                controller.setVariableByAddr(addressList[letter], wordList[letter]);
+            }
+            controller.setVariableByAddr(placeMode, buildType ? 1 : 0);
             for(var t = 0; t < word.Length; t++)
             {
                 pendant.setProperty(word[t].ToString(), "color", "orange");
@@ -304,9 +380,11 @@ namespace MotoMini_DemoSetup
                     pendant.setProperty((position), "color", "orange");
                     pendant.setProperty("percentageText","text",t*100/word.Length+"%");
                 }
+                while (!controller.variableByAddr(letterPlaced).BValue)
+                    Thread.Sleep(2000);
                 pendant.setProperty(word[t].ToString(), "color", "blue");
             }
-            pendant.setProperty("percentageText","text","100%");
+            pendant.setProperty("percentageText","text","100i%");
         }
 
         private static void Main()
@@ -365,6 +443,34 @@ namespace MotoMini_DemoSetup
             "ALPHANUMERIC",
             "ANTIMAGNETIC"
         };
-        Thread t = new Thread(RunAutonomously);
+
+        VariableAddress letterPlaced = new VariableAddress();
+        VariableAddress StartVariable = new VariableAddress();
+        VariableAddress L0 = new VariableAddress();
+        VariableAddress L1 = new VariableAddress();
+        VariableAddress L2 = new VariableAddress();
+        VariableAddress L3 = new VariableAddress();
+        VariableAddress L4 = new VariableAddress();
+        VariableAddress L5 = new VariableAddress();
+        VariableAddress L6 = new VariableAddress();
+        VariableAddress L7 = new VariableAddress();
+        VariableAddress L8 = new VariableAddress();
+        VariableAddress L9 = new VariableAddress();
+        VariableAddress L10 = new VariableAddress();
+        VariableAddress L11 = new VariableAddress();
+        VariableAddress placeMode = new VariableAddress();
+        VariableAddress Errors = new VariableAddress();
+        Any letter0 = new Any();
+        Any letter1 = new Any();
+        Any letter2 = new Any();
+        Any letter3 = new Any();
+        Any letter4 = new Any();
+        Any letter5 = new Any();
+        Any letter6 = new Any();
+        Any letter7 = new Any();
+        Any letter8 = new Any();
+        Any letter9 = new Any();
+        Any letter10 = new Any();
+        Any letter11 = new Any();
     }
 }  

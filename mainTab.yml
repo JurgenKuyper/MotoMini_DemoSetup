@@ -1,23 +1,23 @@
-LetterSquare : Item
-{
-  property alias letter: textBox.text
-  property alias color: letterSquare.color
-  Rectangle
-  {
-    id: letterSquare
-    width: 40
-    height: 40
-    Text
-    {
-      id: textBox
-      color: "white"
-      fontSize: 24
-      fontWeight: Const.Bold
-      text: "A"
-      centerIn: parent
-    }
-  }
-}
+//LetterSquare : Item
+//{
+//  property alias letter: textBox.text
+//  property alias color: letterSquare.color
+//  Rectangle
+//  {
+//    id: letterSquare
+//    width: 40
+//    height: 40
+//    Text
+//    {
+//      id: textBox
+//      color: "white"
+//      fontSize: 24
+//      fontWeight: Const.Bold
+//      text: "A"
+//      centerIn: parent
+//    }
+//  }
+//}
 MainTab : Column {
   Row {
     id: letterRow1
