@@ -151,6 +151,11 @@ namespace MotoMini_DemoSetup
             L11.Address = 12;
             placeMode.Address = 13;
             Errors.Address = 14;
+            controller.setVariableByAddr(StartVariable, 0);
+            THashSet<string> perms = new THashSet<string>();
+            perms.Add("jobcontrol");
+            controller.requestPermissions(perms);
+            controller.setCurrentJob("PICKER", 0);
         }
         void controllerEvents(ControllerEvent e)
         {
@@ -380,6 +385,8 @@ namespace MotoMini_DemoSetup
                     pendant.setProperty((position), "color", "orange");
                     pendant.setProperty("percentageText","text",t*100/word.Length+"%");
                 }
+                controller.setVariableByAddr(StartVariable,1);
+                Console.WriteLine(controller.variableByAddr(letterPlaced).BValue);
                 while (!controller.variableByAddr(letterPlaced).BValue)
                     Thread.Sleep(2000);
                 pendant.setProperty(word[t].ToString(), "color", "blue");
