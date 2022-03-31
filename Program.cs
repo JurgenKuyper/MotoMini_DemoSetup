@@ -233,6 +233,7 @@ namespace MotoMini_DemoSetup
                                 if(pressed)
                                     BuildWord(wordString, PlacementMode);
                                 Thread.Sleep(10000);
+                                direction = true;
                                 PickWord(wordString,PlacementMode);
                                 break;
                             }
@@ -241,12 +242,14 @@ namespace MotoMini_DemoSetup
                     }
                     case "returnBeads":
                     {
-                        if (props["checked"].BValue)
+                        foreach (var p in e.Props)
+                            Console.Write("   " + p.Key + ":" + p.Value);
+                        if (props["clicked"].BValue)
                         {
                             direction = true;
                         }
 
-                        if (!props["checked"].BValue)
+                        if (!props["clicked"].BValue)
                         {
                             direction = false;
                         }
@@ -342,7 +345,8 @@ namespace MotoMini_DemoSetup
             string wordFilled = "";
             char[] wordArray = word.ToCharArray();
             Array.Reverse(wordArray);
-            word = wordArray.ToString();
+            word = new string(wordArray);
+            Console.WriteLine(word);
             controller.setVariableByAddr(placeDirection, direction);
             if (word.Length < 12)
             {
@@ -382,8 +386,9 @@ namespace MotoMini_DemoSetup
                 controller.setVariableByAddr(StartVariable,1);
                 while (controller.variableByAddr(letterPlaced).IValue < 1)
                 {
-                    Console.WriteLine(controller.variableByAddr(letterPlaced).IValue + " " + t);
-                    Console.WriteLine(controller.variableByAddr(letterPlaced).IValue < 1);
+                    var status = controller.variableByAddr(letterPlaced).IValue;
+                    Console.WriteLine(status + " " + t);
+                    Console.WriteLine(status < 1);
                     Thread.Sleep(2000);
                 }
                 pendant.setProperty(word[t].ToString(), "color", "blue");
@@ -432,8 +437,9 @@ namespace MotoMini_DemoSetup
                 controller.setVariableByAddr(StartVariable,1);
                 while (controller.variableByAddr(letterPlaced).IValue < 1)
                 {
-                    Console.WriteLine(controller.variableByAddr(letterPlaced).IValue + " " + t);
-                    Console.WriteLine(controller.variableByAddr(letterPlaced).IValue < 1);
+                    var status = controller.variableByAddr(letterPlaced).IValue;
+                    Console.WriteLine(status + " " + t);
+                    Console.WriteLine(status < 1);
                     Thread.Sleep(2000);
                 }
                 pendant.setProperty(word[t].ToString(), "color", "blue");
