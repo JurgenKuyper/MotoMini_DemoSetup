@@ -113,9 +113,15 @@ MainTab : Column {
         uppercaseInput: true
         allowedChars: "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
       }
-      Button {
-        id: SETTINGS
-        text: "settings"
+      Row {
+        Button {
+          id: SETTINGS
+          text: "settings"
+        }
+        Button {
+          id: returnBeads
+          text: "return beads"
+        }
       }
       Button {
         id: START

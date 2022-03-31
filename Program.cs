@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
-using System.Runtime.InteropServices;
 using System.Threading;
 using Thrift.Collections;
 using Yaskawa.Ext.API;
-using Version = System.Version;
 
 //using System.Windows.Forms;
 
@@ -40,8 +37,6 @@ namespace MotoMini_DemoSetup
         private void Setup()
         {
             extension.subscribeLoggingEvents();
-            lang = pendant.currentLanguage();
-            localeName = pendant.currentLocale();
             // the dispNotice() function is only present in API >= 2.1, so
             //  fall-back to notice() function if running on older SP SDK API
             Yaskawa.Ext.Version requiredMinimumApiVersion = new Yaskawa.Ext.Version(2, 1, 0);
@@ -134,7 +129,7 @@ namespace MotoMini_DemoSetup
             L11.Aspace = AddressSpace.Byte;
             placeMode.Aspace = AddressSpace.Byte;
             Errors.Aspace = AddressSpace.Byte;
-
+            placeDirection.Aspace = AddressSpace.Byte;
             letterPlaced.Address = 27;
             StartVariable.Address = 0;
             L0.Address = 1;
@@ -208,47 +203,70 @@ namespace MotoMini_DemoSetup
                         {
                             case true:
                             {
-                                RunAutonomously();
-                                Console.WriteLine("started");
-                                foreach (PendantEvent ev in pendant.events())
+                                if (pressed)
                                 {
-                                    if (!ev.Props.ContainsKey("item")) return;
-                                    var item = ev.Props["item"].SValue;
-                                    if (item == "START")
+                                    RunAutonomously();
+                                    Console.WriteLine("started");
+                                    foreach (PendantEvent ev in pendant.events())
                                     {
-                                        if (!ev.Props["checked"].BValue)
+                                        if (!ev.Props.ContainsKey("item")) return;
+                                        var item = ev.Props["item"].SValue;
+                                        if (item == "START")
                                         {
-                                            pendant.setProperty("startButtonImage", "source", "images/red-button-off.png");
-                                            Console.WriteLine("recieved shutdown");
-                                            break;
+                                            if (!ev.Props["checked"].BValue)
+                                            {
+                                                pendant.setProperty("startButtonImage", "source",
+                                                    "images/red-button-off.png");
+                                                Console.WriteLine("received shutdown");
+                                                break;
+                                            }
                                         }
                                     }
+
+                                    RunAutonomously();
                                 }
-                                RunAutonomously();
+
                                 break;
                             }
                             case false:
                             {
-                                BuildWord(wordString, PlacementMode);
+                                if(pressed)
+                                    BuildWord(wordString, PlacementMode);
+                                Thread.Sleep(10000);
+                                PickWord(wordString,PlacementMode);
                                 break;
                             }
                         }
                         break;
                     }
+                    case "returnBeads":
+                    {
+                        if (props["checked"].BValue)
+                        {
+                            direction = true;
+                        }
+
+                        if (!props["checked"].BValue)
+                        {
+                            direction = false;
+                        }
+                        
+                        break;
+                    }
                     case "TextField":
                     {
-                        if (dispNoticeEnabled)
-                            pendant.dispNotice(Disposition.Positive, "word entered: ", props["text"].SValue);
-                        else
-                            pendant.notice("word entered: ", props["text"].SValue);
+                        // if (dispNoticeEnabled)
+                        //     pendant.dispNotice(Disposition.Positive, "word entered: ", props["text"].SValue);
+                        // else
+                        //     pendant.notice("word entered: ", props["text"].SValue);
                         wordString = props["text"].SValue;
                         Console.WriteLine(wordString);
                         break;
                     }
                     case "placeComboBox":
                     {
-                        foreach (var p in e.Props)
-                            Console.Write("   " + p.Key + ":" + p.Value);
+                        // foreach (var p in e.Props)
+                        //     Console.Write("   " + p.Key + ":" + p.Value);
                         Console.WriteLine(props["index"].IValue);
                         PlacementMode = props["index"].IValue == 1;
                         break;
@@ -277,7 +295,7 @@ namespace MotoMini_DemoSetup
             catch (Exception ex)
             {
                 // display error
-                Console.WriteLine("Unable to process Clicked event :" + ex);
+                Console.WriteLine("Unable to process Clicked event: " + ex.StackTrace);
             }
         }
 
@@ -303,7 +321,7 @@ namespace MotoMini_DemoSetup
         {
             foreach (var word in words)
             {
-                BuildStaticWord(word);
+                BuildWord(word, true);
                 //pendant.setProperty(("pole"), "color", "blue");
                 for (var element = 0; element < 12; element++)
                 {
@@ -318,11 +336,17 @@ namespace MotoMini_DemoSetup
             run = false;
             extension.Dispose();
         }
-        private void BuildStaticWord(string word)
+        private void PickWord(string word, bool buildType)
         {
+            string position = "pole";
+            string wordFilled = "";
+            char[] wordArray = word.ToCharArray();
+            Array.Reverse(wordArray);
+            word = wordArray.ToString();
+            controller.setVariableByAddr(placeDirection, direction);
             if (word.Length < 12)
             {
-                word = word.PadRight(12);
+                wordFilled = word.PadRight(12);
                 Console.WriteLine(word);
             }
             List<Any> wordList = new List<Any>() {letter0, letter1, letter2, letter3, letter4, letter5, letter6, 
@@ -330,39 +354,7 @@ namespace MotoMini_DemoSetup
             List<VariableAddress> addressList = new List<VariableAddress>() {L0, L1, L2, L3, L4, L5, L6, L7, L8, L9, L10, L11};
             for(int letter = 0; letter < wordList.Count; letter++)
             {
-                var letterInt = char.ToUpper(word[letter]) - 65;
-                if (letterInt == -33)
-                    letterInt = 41;
-                Console.WriteLine(letterInt);
-                wordList[letter].IValue = letterInt;
-                controller.setVariableByAddr(addressList[letter], wordList[letter]);
-            }
-            controller.setVariableByAddr(placeMode,1);
-            for(var l = 0; l < word.Length; l++)
-            {
-                pendant.setProperty("percentageText","text",l*100/word.Length+"%");
-                pendant.setProperty(word[l].ToString(), "color", "orange");
-                pendant.setProperty("place" + l, "color", "orange");
-                while (!controller.variableByAddr(letterPlaced).BValue)
-                    Thread.Sleep(2000);
-                pendant.setProperty(word[l].ToString(), "color", "blue");
-            }
-            pendant.setProperty("percentageText","text","100%");
-        }
-        private void BuildWord(string word, bool buildType)
-        {
-            var position = "pole";
-            if (word.Length < 12)
-            {
-                word = word.PadRight(12);
-                Console.WriteLine(word);
-            }
-            List<Any> wordList = new List<Any>() {letter0, letter1, letter2, letter3, letter4, letter5, letter6, 
-                letter7, letter8, letter9, letter10, letter11};
-            List<VariableAddress> addressList = new List<VariableAddress>() {L0, L1, L2, L3, L4, L5, L6, L7, L8, L9, L10, L11};
-            for(int letter = 0; letter < wordList.Count; letter++)
-            {
-                var letterInt = char.ToUpper(word[letter]) - 65;
+                var letterInt = char.ToUpper(wordFilled[letter]) - 65;
                 if (letterInt == -33)
                     letterInt = 41;
                 Console.WriteLine(letterInt);
@@ -372,6 +364,8 @@ namespace MotoMini_DemoSetup
             controller.setVariableByAddr(placeMode, buildType ? 1 : 0);
             for(var t = 0; t < word.Length; t++)
             {
+                controller.setVariableByAddr(letterPlaced, 0);
+                Console.WriteLine(word + t);
                 pendant.setProperty(word[t].ToString(), "color", "orange");
                 //controller.variableByAddr("I001");
                 if (buildType)
@@ -386,12 +380,65 @@ namespace MotoMini_DemoSetup
                     pendant.setProperty("percentageText","text",t*100/word.Length+"%");
                 }
                 controller.setVariableByAddr(StartVariable,1);
-                Console.WriteLine(controller.variableByAddr(letterPlaced).BValue);
-                while (!controller.variableByAddr(letterPlaced).BValue)
+                while (controller.variableByAddr(letterPlaced).IValue < 1)
+                {
+                    Console.WriteLine(controller.variableByAddr(letterPlaced).IValue + " " + t);
+                    Console.WriteLine(controller.variableByAddr(letterPlaced).IValue < 1);
                     Thread.Sleep(2000);
+                }
                 pendant.setProperty(word[t].ToString(), "color", "blue");
             }
-            pendant.setProperty("percentageText","text","100i%");
+            pendant.setProperty("percentageText","text","100%");
+        }
+        private void BuildWord(string word, bool buildType)
+        {
+            string position = "pole";
+            string wordFilled = "";
+            if (word.Length < 12)
+            {
+                wordFilled = word.PadRight(12);
+                Console.WriteLine(word);
+            }
+            List<Any> wordList = new List<Any>() {letter0, letter1, letter2, letter3, letter4, letter5, letter6, 
+                letter7, letter8, letter9, letter10, letter11};
+            List<VariableAddress> addressList = new List<VariableAddress>() {L0, L1, L2, L3, L4, L5, L6, L7, L8, L9, L10, L11};
+            for(int letter = 0; letter < wordList.Count; letter++)
+            {
+                var letterInt = char.ToUpper(wordFilled[letter]) - 65;
+                if (letterInt == -33)
+                    letterInt = 41;
+                Console.WriteLine(letterInt);
+                wordList[letter].IValue = letterInt;
+                controller.setVariableByAddr(addressList[letter], wordList[letter]);
+            }
+            controller.setVariableByAddr(placeMode, buildType ? 1 : 0);
+            for(var t = 0; t < word.Length; t++)
+            {
+                controller.setVariableByAddr(letterPlaced, 0);
+                Console.WriteLine(word + t);
+                pendant.setProperty(word[t].ToString(), "color", "orange");
+                //controller.variableByAddr("I001");
+                if (buildType)
+                {
+                    position = "place";
+                    pendant.setProperty((position + t), "color", "orange");
+                    pendant.setProperty("percentageText","text",t*100/word.Length+"%");
+                }
+                else
+                {
+                    pendant.setProperty((position), "color", "orange");
+                    pendant.setProperty("percentageText","text",t*100/word.Length+"%");
+                }
+                controller.setVariableByAddr(StartVariable,1);
+                while (controller.variableByAddr(letterPlaced).IValue < 1)
+                {
+                    Console.WriteLine(controller.variableByAddr(letterPlaced).IValue + " " + t);
+                    Console.WriteLine(controller.variableByAddr(letterPlaced).IValue < 1);
+                    Thread.Sleep(2000);
+                }
+                pendant.setProperty(word[t].ToString(), "color", "blue");
+            }
+            pendant.setProperty("percentageText","text","100%");
         }
 
         private static void Main()
@@ -429,14 +476,11 @@ namespace MotoMini_DemoSetup
         private Yaskawa.Ext.Version apiVersion;
         private bool run = new bool();
         private string wordString;
-        private string lang;
-        private string localeName;
         private bool PlacementMode;
         private bool AutonomousMode;
-        protected CultureInfo locale;
-        protected CultureTypes strings;
-        protected bool dispNoticeEnabled = false;
-        protected bool pressed = false;
+        private bool dispNoticeEnabled = false;
+        private bool pressed = false;
+        private bool direction;
         private static List<string> words = new List<string>
         {
             "YASKAWA",
@@ -467,6 +511,7 @@ namespace MotoMini_DemoSetup
         VariableAddress L11 = new VariableAddress();
         VariableAddress placeMode = new VariableAddress();
         VariableAddress Errors = new VariableAddress();
+        VariableAddress placeDirection = new VariableAddress();
         Any letter0 = new Any();
         Any letter1 = new Any();
         Any letter2 = new Any();
