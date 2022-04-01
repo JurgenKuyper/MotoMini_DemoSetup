@@ -119,7 +119,7 @@ MainTab : Column {
           text: "settings"
         }
         Button {
-          id: returnBeads
+          id: RETURNBEADS
           text: "return beads"
         }
       }
