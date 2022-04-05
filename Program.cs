@@ -16,7 +16,7 @@ namespace MotoMini_DemoSetup
             Yaskawa.Ext.Version version = new Yaskawa.Ext.Version(1, 0, 0);
             var languages = new HashSet<string> {"en", "ja"};
 
-            extension = new Yaskawa.Ext.Extension("yeu.test-extension.ext",
+            extension = new Yaskawa.Ext.Extension("yeu.demo-extension.ext",
                  version, "YEU", languages, "10.0.0.4", 10080);
             // extension = new Yaskawa.Ext.Extension("yeu.test-extension.ext",
             //     version, "YEU", languages, "localhost", 10080);
@@ -66,7 +66,6 @@ namespace MotoMini_DemoSetup
             
             List<string> ymlFiles = new List<string>
             {
-                "ControlsTab.yml",
                 "mainTab.yml",
                 "settingsTab.yml",
                 "NavTab.yml",
@@ -152,7 +151,6 @@ namespace MotoMini_DemoSetup
             THashSet<string> perms = new THashSet<string>();
             perms.Add("jobcontrol");
             controller.requestPermissions(perms);
-            controller.setCurrentJob("PICKER", 0);
         }
         void controllerEvents(ControllerEvent e)
         {
@@ -185,6 +183,24 @@ namespace MotoMini_DemoSetup
                         for (var element = 0; element < 12; element++)
                         {
                             pendant.setProperty(("place" + element), "color", "blue");
+                        }
+                        
+                        if (controller.servoState() != ServoState.On)
+                        {
+                            if (dispNoticeEnabled)
+                                pendant.dispNotice(Disposition.Negative, "Servo state", "servos not turned enabled or turned on");
+                            else
+                                pendant.notice("Servo state", "servos not turned enabled or turned on");
+                            break;
+                        }
+                        controller.setCurrentJob("PICKER", 1);
+                        if (wordString.Length < 1)
+                        {
+                            if (dispNoticeEnabled)
+                                pendant.dispNotice(Disposition.Negative, "minLetters", "empty words are not allowed");
+                            else
+                                pendant.notice("minLetters", "empty words are not allowed");
+                            break;
                         }
                         if (getOccurenceOfChar(wordString) > 5)
                         {
@@ -417,6 +433,7 @@ namespace MotoMini_DemoSetup
                     Thread.Sleep(2000);
                 }
                 pendant.setProperty(word[word.Length - t].ToString(), "color", "blue");
+                Console.WriteLine(word.Length - t);
                 pendant.setProperty(buildType ? position[word.Length - t].ToString() : position, "color", "blue");
             }
             pendant.setProperty("percentageText","text","100%");

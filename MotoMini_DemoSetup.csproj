@@ -13,4 +13,4 @@
         <HintPath>..\SmartPendantSDK\csharp\bin\Debug\netcoreapp2.2\YaskawaExtension.dll</HintPath>
       </Reference>
     </ItemGroup>
-</Project>
+</Project> 
