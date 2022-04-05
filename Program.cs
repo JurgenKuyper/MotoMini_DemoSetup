@@ -19,6 +19,8 @@ namespace MotoMini_DemoSetup
             extension = new Yaskawa.Ext.Extension("yeu.demo-extension.ext",
                  version, "YEU", languages, "10.0.0.4", 10080);
             // extension = new Yaskawa.Ext.Extension("yeu.test-extension.ext",
+            //      version, "YEU", languages, "10.0.0.4", 10080);
+            // extension = new Yaskawa.Ext.Extension("yeu.test-extension.ext",
             //     version, "YEU", languages, "localhost", 10080);
             
             apiVersion = extension.apiVersion();
@@ -184,7 +186,6 @@ namespace MotoMini_DemoSetup
                         {
                             pendant.setProperty(("place" + element), "color", "blue");
                         }
-                        
                         if (controller.servoState() != ServoState.On)
                         {
                             if (dispNoticeEnabled)
@@ -193,7 +194,7 @@ namespace MotoMini_DemoSetup
                                 pendant.notice("Servo state", "servos not turned enabled or turned on");
                             break;
                         }
-                        controller.setCurrentJob("PICKER", 1);
+                        //controller.setCurrentJob("PICKER", 1);
                         if (wordString.Length < 1)
                         {
                             if (dispNoticeEnabled)
@@ -257,12 +258,19 @@ namespace MotoMini_DemoSetup
                             }
                             case false:
                             {
-                                if(pressed)
+                                if (pressed)
+                                {
+                                    Console.WriteLine("direction: " + direction + " mode: " + PlacementMode);
                                     BuildWord(wordString, PlacementMode);
+                                }
+
                                 Thread.Sleep(5000);
-                                direction = true;
-                                PickWord(wordString,PlacementMode);
-                                direction = false;
+                                if(!direction)
+                                {
+                                    direction = true;
+                                    PickWord(wordString, PlacementMode);
+                                    direction = false;
+                                }
                                 pendant.setProperty("startButtonImage", "source",
                                     "images/red-button-off.png");
                                 pendant.setProperty("START", "checked", false);
@@ -426,6 +434,7 @@ namespace MotoMini_DemoSetup
                     pendant.setProperty("percentageText","text",t*100/word.Length+"%");
                 }
                 controller.setVariableByAddr(StartVariable,1);
+                Console.WriteLine(controller.variableByAddr(StartVariable).IValue);
                 while (controller.variableByAddr(letterPlaced).IValue < 1)
                 {
                     //Console.WriteLine(controller.variableByAddr(letterPlaced).IValue + " " + t);
@@ -433,8 +442,8 @@ namespace MotoMini_DemoSetup
                     Thread.Sleep(2000);
                 }
                 pendant.setProperty(word[word.Length - t].ToString(), "color", "blue");
-                Console.WriteLine(word.Length - t);
-                pendant.setProperty(buildType ? position[word.Length - t].ToString() : position, "color", "blue");
+                // Console.WriteLine("BT + word.length + t + Pos[wl-t]/pos: " + buildType + (word.Length + t) + (position + (word.Length - t)) + position);
+                pendant.setProperty(buildType ? position + (word.Length - t) : position, "color", "blue");
             }
             pendant.setProperty("percentageText","text","100%");
             pendant.setProperty(("pole"), "color", "blue");
