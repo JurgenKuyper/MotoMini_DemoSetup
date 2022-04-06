@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using Thrift.Collections;
 using Yaskawa.Ext.API;
@@ -194,27 +195,6 @@ namespace MotoMini_DemoSetup
                                 pendant.notice("Servo state", "servos not turned enabled or turned on");
                             break;
                         }
-                        //controller.setCurrentJob("PICKER", 1);
-                        if (wordString.Length < 1)
-                        {
-                            if (dispNoticeEnabled)
-                                pendant.dispNotice(Disposition.Negative, "minLetters", "empty words are not allowed");
-                            else
-                                pendant.notice("minLetters", "empty words are not allowed");
-                            break;
-                        }
-                        if (getOccurenceOfChar(wordString) > 5)
-                        {
-                            if (dispNoticeEnabled)
-                                pendant.dispNotice(Disposition.Negative, "maxLetters", "entered too many of one letter");
-                            else
-                                pendant.notice("maxLetters", "entered too many of one letter");
-                            break;
-                        }
-                        if (dispNoticeEnabled)
-                            pendant.dispNotice(Disposition.Positive, "Started sequence", "It worked!");
-                        else
-                            pendant.notice("Started sequence", "It worked!");
                         if (props["checked"].BValue)
                         {
                             pressed = true;
@@ -231,27 +211,9 @@ namespace MotoMini_DemoSetup
                             case true:
                             {
                                 if (pressed)
-                                {
-                                    direction = false;
-                                    RunAutonomously();
-                                    Console.WriteLine("started");
-                                    foreach (PendantEvent ev in pendant.events())
-                                    {
-                                        if (!ev.Props.ContainsKey("item")) return;
-                                        var item = ev.Props["item"].SValue;
-                                        if (item == "START")
-                                        {
-                                            if (!ev.Props["checked"].BValue)
-                                            {
-                                                pendant.setProperty("startButtonImage", "source",
-                                                    "images/red-button-off.png");
-                                                Console.WriteLine("received shutdown");
-                                                break;
-                                            }
-                                        }
-                                    }
-
-                                    RunAutonomously();
+                                { 
+                                    Thread T = new Thread(doSomeHeavyLifting);
+                                    T.Start();
                                 }
 
                                 break;
@@ -260,6 +222,26 @@ namespace MotoMini_DemoSetup
                             {
                                 if (pressed)
                                 {
+                                    if (!wordString.Any())
+                                    {
+                                        if (dispNoticeEnabled)
+                                            pendant.dispNotice(Disposition.Negative, "minLetters", "empty words are not allowed");
+                                        else
+                                            pendant.notice("minLetters", "empty words are not allowed");
+                                        break;
+                                    }
+                                    if (getOccurenceOfChar(wordString) > 5)
+                                    {
+                                        if (dispNoticeEnabled)
+                                            pendant.dispNotice(Disposition.Negative, "maxLetters", "entered too many of one letter");
+                                        else
+                                            pendant.notice("maxLetters", "entered too many of one letter");
+                                        break;
+                                    }
+                                    if (dispNoticeEnabled)
+                                        pendant.dispNotice(Disposition.Positive, "Started sequence", "It worked!");
+                                    else
+                                        pendant.notice("Started sequence", "It worked!");
                                     Console.WriteLine("direction: " + direction + " mode: " + PlacementMode);
                                     BuildWord(wordString, PlacementMode);
                                 }
@@ -456,7 +438,7 @@ namespace MotoMini_DemoSetup
             if (word.Length < 12)
             {
                 wordFilled = word.PadRight(12);
-                //Console.WriteLine(word);
+                Console.WriteLine(word);
             }
             List<Any> wordList = new List<Any>() {letter0, letter1, letter2, letter3, letter4, letter5, letter6, 
                 letter7, letter8, letter9, letter10, letter11};
@@ -466,15 +448,17 @@ namespace MotoMini_DemoSetup
                 var letterInt = char.ToUpper(wordFilled[letter]) - 65;
                 if (letterInt == -33)
                     letterInt = 41;
-                //Console.WriteLine(letterInt);
+                Console.WriteLine("LTTnumber: " + letterInt);
                 wordList[letter].IValue = letterInt;
                 controller.setVariableByAddr(addressList[letter], wordList[letter]);
             }
+            Console.WriteLine("setting placeMode");
             controller.setVariableByAddr(placeMode, buildType ? 1 : 0);
+
             for(var t = 0; t < word.Length; t++)
             {
                 controller.setVariableByAddr(letterPlaced, 0);
-                //Console.WriteLine(word + t);
+                Console.WriteLine(word + t);
                 pendant.setProperty(word[t].ToString(), "color", "orange");
                 //controller.variableByAddr("I001");
                 if (buildType)
@@ -489,10 +473,12 @@ namespace MotoMini_DemoSetup
                     pendant.setProperty("percentageText","text",t*100/word.Length+"%");
                 }
                 controller.setVariableByAddr(StartVariable,1);
+                Thread.Sleep(200);
+                Console.WriteLine(controller.variableByAddr(StartVariable).IValue);
                 while (controller.variableByAddr(letterPlaced).IValue < 1)
                 {
-                    //Console.WriteLine(controller.variableByAddr(letterPlaced).IValue + " " + t);
-                    //Console.WriteLine(controller.variableByAddr(letterPlaced).IValue < 1);
+                    Console.WriteLine(controller.variableByAddr(letterPlaced).IValue + " " + t);
+                    Console.WriteLine(controller.variableByAddr(letterPlaced).IValue < 1);
                     Thread.Sleep(2000);
                 }
                 pendant.setProperty(word[t].ToString(), "color", "blue");
@@ -500,6 +486,27 @@ namespace MotoMini_DemoSetup
             pendant.setProperty("percentageText","text","100%");
         }
 
+        private void doSomeHeavyLifting()
+        {
+            direction = false;
+            Console.WriteLine("started");
+            RunAutonomously();
+            // foreach (PendantEvent ev in pendant.events())
+            // {
+            //     if (!ev.Props.ContainsKey("item")) return;
+            //     var item = ev.Props["item"].SValue;
+            //     if (item == "START")
+            //     {
+            //         if (!ev.Props["checked"].BValue)
+            //         {
+            //             pendant.setProperty("startButtonImage", "source",
+            //                 "images/red-button-off.png");
+            //             Console.WriteLine("received shutdown");
+            //             break;
+            //         }
+            //     }
+            // }
+        }
         private static void Main()
         {
             //var testExtension = new TestExtension();
