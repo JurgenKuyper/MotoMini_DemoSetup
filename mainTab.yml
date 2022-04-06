@@ -53,10 +53,13 @@ MainTab : Column {
   }
   Row {
     id: imageRow
-    Text {
-        id: percentageText
-        fontSize: 76
-        text: "0%"
+    Item {
+        width: 512
+        Text {
+            id: percentageText
+            fontSize: 76
+            text: "0%"
+        }
     }
     Image {
         id: autoButtonImage
