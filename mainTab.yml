@@ -83,19 +83,19 @@ MainTab : Column {
     id: imagerow
     Column {
       id: letterColumn1
-      Rectangle { id: pole; radius: 20; width: 40; height: 40; color: "blue"}
-      Rectangle { id: place0; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: " "; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
-      Rectangle { id: place1; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: " "; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
-      Rectangle { id: place2; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: " "; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
-      Rectangle { id: place3; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: " "; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
-      Rectangle { id: place4; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: " "; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
-      Rectangle { id: place5; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: " "; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
-      Rectangle { id: place6; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: " "; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
-      Rectangle { id: place7; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: " "; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
-      Rectangle { id: place8; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: " "; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
-      Rectangle { id: place9; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: " "; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
-      Rectangle { id: place10; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: " "; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
-      Rectangle { id: place11; width: 40; height: 40; color: "blue";Text{centerIn: parent; text: " "; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
+      Rectangle { id: pole; radius: 20; width: 40; height: 40; color: "blue";Text{id: poleText; centerIn: parent; text: " "; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
+      Rectangle { id: place0; width: 40; height: 40; color: "blue";Text{id: placeText0; centerIn: parent; text: " "; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
+      Rectangle { id: place1; width: 40; height: 40; color: "blue";Text{id: placeText1; centerIn: parent; text: " "; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
+      Rectangle { id: place2; width: 40; height: 40; color: "blue";Text{id: placeText2; centerIn: parent; text: " "; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
+      Rectangle { id: place3; width: 40; height: 40; color: "blue";Text{id: placeText3; centerIn: parent; text: " "; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
+      Rectangle { id: place4; width: 40; height: 40; color: "blue";Text{id: placeText4; centerIn: parent; text: " "; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
+      Rectangle { id: place5; width: 40; height: 40; color: "blue";Text{id: placeText5; centerIn: parent; text: " "; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
+      Rectangle { id: place6; width: 40; height: 40; color: "blue";Text{id: placeText6; centerIn: parent; text: " "; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
+      Rectangle { id: place7; width: 40; height: 40; color: "blue";Text{id: placeText7; centerIn: parent; text: " "; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
+      Rectangle { id: place8; width: 40; height: 40; color: "blue";Text{id: placeText8; centerIn: parent; text: " "; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
+      Rectangle { id: place9; width: 40; height: 40; color: "blue";Text{id: placeText9; centerIn: parent; text: " "; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
+      Rectangle { id: place10; width: 40; height: 40; color: "blue";Text{id: placeText10; centerIn: parent; text: " "; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
+      Rectangle { id: place11; width: 40; height: 40; color: "blue";Text{id: placeText11; centerIn: parent; text: " "; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
     }
     Column {
       Image {

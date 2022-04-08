@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Mime;
 using System.Threading;
 using Thrift.Collections;
 using Yaskawa.Ext.API;
@@ -182,11 +183,7 @@ namespace MotoMini_DemoSetup
                     }
                     case "START":
                     {
-                        pendant.setProperty(("pole"), "color", "blue");
-                        for (var element = 0; element < 12; element++)
-                        {
-                            pendant.setProperty(("place" + element), "color", "blue");
-                        }
+                        initializeScreen();
                         if (controller.servoState() != ServoState.On)
                         {
                             if (dispNoticeEnabled)
@@ -222,7 +219,7 @@ namespace MotoMini_DemoSetup
                             {
                                 if (pressed)
                                 {
-                                    if (!wordString.Any())
+                                    if (string.IsNullOrEmpty(wordString))
                                     {
                                         if (dispNoticeEnabled)
                                             pendant.dispNotice(Disposition.Negative, "minLetters", "empty words are not allowed");
@@ -245,17 +242,16 @@ namespace MotoMini_DemoSetup
                                     Console.WriteLine("direction: " + direction + " mode: " + PlacementMode);
                                     BuildWord(wordString, PlacementMode);
                                 }
-
-                                Thread.Sleep(5000);
-                                if(!direction)
+                                Console.WriteLine(PlacementMode);
+                                if(PlacementMode)
                                 {
+                                    Thread.Sleep(5000);
                                     direction = true;
                                     PickWord(wordString, PlacementMode);
                                     direction = false;
                                 }
-                                pendant.setProperty("startButtonImage", "source",
-                                    "images/red-button-off.png");
-                                pendant.setProperty("START", "checked", false);
+
+                                initializeScreen();
                                 break;
                             }
                         }
@@ -317,6 +313,21 @@ namespace MotoMini_DemoSetup
             Console.WriteLine("screen opened");
         }
 
+        private void initializeScreen()
+        {
+            pendant.setProperty("pole", "color", "blue");
+            pendant.setProperty("poleText", "text", " ");
+            for (var element = 0; element < 12; element++)
+            {
+                pendant.setProperty(("place" + element), "color", "blue");
+                pendant.setProperty(("placeText" + element), "text", " ");
+            }
+            pendant.setProperty("startButtonImage", "source",
+                "images/green-button-off.png");
+            pendant.setProperty("autoButtonImage", "source",
+                "images/red-button-off.png");
+            pendant.setProperty("START", "checked", false);
+        }
         private static bool PingPendant()
         {
             try
@@ -375,17 +386,17 @@ namespace MotoMini_DemoSetup
         }
         private void PickWord(string word, bool buildType)
         {
+            controller.setVariableByAddr(placeDirection, direction ? 1 : 0);
             string position = "pole";
             string wordFilled = "";
             char[] wordArray = word.ToCharArray();
             word = new string(wordArray);
-            //Console.WriteLine("PDA+DIR: " + placeDirection.Address + direction);
-            controller.setVariableByAddr(placeDirection, direction ? 1 : 0);
             if (word.Length < 12)
             {
                 wordFilled = word.PadRight(12);
                 //Console.WriteLine(word);
             }
+            
             List<Any> wordList = new List<Any>() {letter0, letter1, letter2, letter3, letter4, letter5, letter6, 
                 letter7, letter8, letter9, letter10, letter11};
             List<VariableAddress> addressList = new List<VariableAddress>() {L0, L1, L2, L3, L4, L5, L6, L7, L8, L9, L10, L11};
@@ -408,11 +419,13 @@ namespace MotoMini_DemoSetup
                 {
                     position = "place";
                     pendant.setProperty(position + (word.Length - t), "color", "orange");
+                    pendant.setProperty(position + "Text" + (word.Length - t), "text", " ");
                     pendant.setProperty("percentageText","text",t*100/word.Length+"%");
                 }
                 else
                 {
-                    pendant.setProperty((position), "color", "orange");
+                    pendant.setProperty(position, "color", "orange");
+                    pendant.setProperty(position + "Text", "text", " ");
                     pendant.setProperty("percentageText","text",t*100/word.Length+"%");
                 }
                 controller.setVariableByAddr(StartVariable,1);
@@ -424,6 +437,7 @@ namespace MotoMini_DemoSetup
                     Thread.Sleep(2000);
                 }
                 pendant.setProperty(word[word.Length - t].ToString(), "color", "blue");
+                pendant.setProperty(buildType ? position + "Text" + (word.Length - t) : position + "Text", "text", " ");
                 // Console.WriteLine("BT + word.length + t + Pos[wl-t]/pos: " + buildType + (word.Length + t) + (position + (word.Length - t)) + position);
                 pendant.setProperty(buildType ? position + (word.Length - t) : position, "color", "blue");
             }
@@ -435,11 +449,14 @@ namespace MotoMini_DemoSetup
             controller.setVariableByAddr(placeDirection, direction ? 1 : 0);
             string position = "pole";
             string wordFilled = "";
+            char[] wordArray = word.ToCharArray();
+            word = new string(wordArray);
             if (word.Length < 12)
             {
                 wordFilled = word.PadRight(12);
                 Console.WriteLine(word);
             }
+            
             List<Any> wordList = new List<Any>() {letter0, letter1, letter2, letter3, letter4, letter5, letter6, 
                 letter7, letter8, letter9, letter10, letter11};
             List<VariableAddress> addressList = new List<VariableAddress>() {L0, L1, L2, L3, L4, L5, L6, L7, L8, L9, L10, L11};
@@ -452,29 +469,29 @@ namespace MotoMini_DemoSetup
                 wordList[letter].IValue = letterInt;
                 controller.setVariableByAddr(addressList[letter], wordList[letter]);
             }
-            Console.WriteLine("setting placeMode");
             controller.setVariableByAddr(placeMode, buildType ? 1 : 0);
 
             for(var t = 0; t < word.Length; t++)
             {
                 controller.setVariableByAddr(letterPlaced, 0);
-                Console.WriteLine(word + t);
+                Console.WriteLine(word + " " + word[t]);
                 pendant.setProperty(word[t].ToString(), "color", "orange");
                 //controller.variableByAddr("I001");
                 if (buildType)
                 {
                     position = "place";
                     pendant.setProperty((position + t), "color", "orange");
+                    pendant.setProperty(position + "Text" + t, "text", wordFilled[t].ToString());
                     pendant.setProperty("percentageText","text",t*100/word.Length+"%");
                 }
                 else
                 {
                     pendant.setProperty((position), "color", "orange");
+                    Console.WriteLine(word[t]);
+                    pendant.setProperty(position+"Text", "text", wordFilled[t].ToString());
                     pendant.setProperty("percentageText","text",t*100/word.Length+"%");
                 }
                 controller.setVariableByAddr(StartVariable,1);
-                Thread.Sleep(200);
-                Console.WriteLine(controller.variableByAddr(StartVariable).IValue);
                 while (controller.variableByAddr(letterPlaced).IValue < 1)
                 {
                     Console.WriteLine(controller.variableByAddr(letterPlaced).IValue + " " + t);
