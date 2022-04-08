@@ -65,7 +65,9 @@ namespace MotoMini_DemoSetup
                 PendantEventType.UtilityOpened,
                 PendantEventType.UtilityClosed,
                 PendantEventType.UtilityMoved,
-                PendantEventType.Clicked
+                PendantEventType.Clicked,
+                PendantEventType.TextEdited,
+                PendantEventType.EditingFinished
             });
             
             List<string> ymlFiles = new List<string>
@@ -108,6 +110,7 @@ namespace MotoMini_DemoSetup
             pendant.addItemEventConsumer("SETTINGS", PendantEventType.Clicked, OnControlsItemClicked);
             pendant.addItemEventConsumer("START", PendantEventType.Clicked, OnControlsItemClicked);
             pendant.addItemEventConsumer("TextField", PendantEventType.Accepted, OnControlsItemClicked);
+            pendant.addItemEventConsumer("TextField", PendantEventType.EditingFinished, OnControlsItemClicked);
             pendant.addItemEventConsumer("autoCheckBox", PendantEventType.CheckedChanged, OnControlsItemClicked);
             pendant.addItemEventConsumer("placeComboBox", PendantEventType.Activated, OnControlsItemClicked);
             pendant.addItemEventConsumer("MainButton",PendantEventType.Clicked, OnControlsItemClicked);

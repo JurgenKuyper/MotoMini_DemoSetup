@@ -55,6 +55,7 @@ MainTab : Column {
     id: imageRow
     Item {
         width: 512
+        height: 48
         Text {
             id: percentageText
             fontSize: 76
