@@ -19,9 +19,9 @@ namespace MotoMini_DemoSetup
             var languages = new HashSet<string> {"en", "ja"};
 
             extension = new Yaskawa.Ext.Extension("yeu.demo-extension.ext",
-                 version, "YEU", languages, "10.0.0.4", 10080);
-            // extension = new Yaskawa.Ext.Extension("yeu.test-extension.ext",
-            //      version, "YEU", languages, "10.0.0.4", 10080);
+                version, "YEU", languages, "10.0.0.4", 10080);
+            //extension = new Yaskawa.Ext.Extension("yeu.test-extension.ext",
+            //    version, "YEU", languages, "10.0.0.4", 10080);
             // extension = new Yaskawa.Ext.Extension("yeu.test-extension.ext",
             //     version, "YEU", languages, "localhost", 10080);
             
@@ -100,11 +100,11 @@ namespace MotoMini_DemoSetup
                 "UtilWindow", // Item type
                 "Demo Extension", // Menu name
                 "Demo Utility"); // Window title
-            pendant.registerIntegration("navpanel", // id
-                IntegrationPoint.NavigationPanel, // where
-                "NavPanel", // YML Item type
-                "Demo", // Button label
-                "images/d-icon-256.png"); // Button icon
+            // pendant.registerIntegration("navpanel", // id
+            //     IntegrationPoint.NavigationPanel, // where
+            //     "NavPanel", // YML Item type
+            //     "Demo", // Button label
+            //     "images/d-icon-256.png"); // Button icon
             pendant.addEventConsumer(PendantEventType.UtilityOpened, OnOpened);
             controller.addEventConsumer(ControllerEventType.ServoState,controllerEvents);
             pendant.addItemEventConsumer("SETTINGS", PendantEventType.Clicked, OnControlsItemClicked);
@@ -213,6 +213,7 @@ namespace MotoMini_DemoSetup
                                 if (pressed)
                                 { 
                                     Thread T = new Thread(doSomeHeavyLifting);
+                                    //T.Priority = ThreadPriority.Lowest;
                                     T.Start();
                                 }
 
@@ -470,13 +471,15 @@ namespace MotoMini_DemoSetup
                     letterInt = 41;
                 Console.WriteLine("LTTnumber: " + letterInt);
                 wordList[letter].IValue = letterInt;
-                controller.setVariableByAddr(addressList[letter], wordList[letter]);
+                //controller.setVariableByAddr(addressList[letter], wordList[letter]);
+                Thread.Sleep(100);
             }
             controller.setVariableByAddr(placeMode, buildType ? 1 : 0);
-
+            Console.WriteLine("world.length: " + word.Length);
             for(var t = 0; t < word.Length; t++)
             {
                 controller.setVariableByAddr(letterPlaced, 0);
+                Thread.Sleep(200);
                 Console.WriteLine(word + " " + word[t]);
                 pendant.setProperty(word[t].ToString(), "color", "orange");
                 //controller.variableByAddr("I001");
@@ -495,6 +498,7 @@ namespace MotoMini_DemoSetup
                     pendant.setProperty("percentageText","text",t*100/word.Length+"%");
                 }
                 controller.setVariableByAddr(StartVariable,1);
+                Thread.Sleep(100);
                 while (controller.variableByAddr(letterPlaced).IValue < 1)
                 {
                     Console.WriteLine(controller.variableByAddr(letterPlaced).IValue + " " + t);
