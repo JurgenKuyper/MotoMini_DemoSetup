@@ -180,7 +180,11 @@ namespace MotoMini_DemoSetup
                     }
                     case "SETTINGS":
                     {
+                        Console.WriteLine(controller.inputValue(0));
+                        Console.WriteLine(controller.inputValue(1));
                         //pendant.openUtilityWindow("settingsTab");
+                        pendant.setProperty("Open", "color", controller.inputValue(0) ? "green":"blue");
+                        pendant.setProperty("Closed", "color", controller.inputValue(1) ? "green":"blue");
                         pendant.setProperty("TabBar", "currentIndex", 1);
                         break;
                     }
@@ -301,6 +305,7 @@ namespace MotoMini_DemoSetup
                                 break;
                             }
                         }
+
                         break;
                     }
                 }
@@ -336,7 +341,6 @@ namespace MotoMini_DemoSetup
         {
             try
             {
-                //CheckStatus();
                 return false;
             }
             catch (Exception e)

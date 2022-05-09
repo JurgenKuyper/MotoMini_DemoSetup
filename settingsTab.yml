@@ -35,6 +35,18 @@ SettingsTab : Row
             id: MainButton
             text: "Main Tab"
         }
+        Row {
+            Rectangle { id: Open; width: 40; height: 40; radius: 5; color: "blue";}
+            Rectangle { id: Closed; width: 40; height: 40; radius: 5; color: "blue";}
+        }
+        Button {
+            id: GPOpen
+            text: "Open Gripper"
+        }
+        Button {
+            id: GPClose
+            text: "Close Gripper"
+        }
     }
 }
 
