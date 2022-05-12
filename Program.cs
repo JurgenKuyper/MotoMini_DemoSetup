@@ -115,6 +115,8 @@ namespace MotoMini_DemoSetup
             pendant.addItemEventConsumer("placeComboBox", PendantEventType.Activated, OnControlsItemClicked);
             pendant.addItemEventConsumer("MainButton",PendantEventType.Clicked, OnControlsItemClicked);
             pendant.addItemEventConsumer("RETURNBEADS",PendantEventType.Pressed, OnControlsItemClicked);
+            pendant.addItemEventConsumer("GPOpen",PendantEventType.Pressed, OnControlsItemClicked);
+            pendant.addItemEventConsumer("GPClose",PendantEventType.Pressed, OnControlsItemClicked);
             addVariables();
         }
 
@@ -180,11 +182,11 @@ namespace MotoMini_DemoSetup
                     }
                     case "SETTINGS":
                     {
-                        Console.WriteLine(controller.inputValue(0));
                         Console.WriteLine(controller.inputValue(1));
+                        Console.WriteLine(controller.inputValue(2));
                         //pendant.openUtilityWindow("settingsTab");
-                        pendant.setProperty("Open", "color", controller.inputValue(0) ? "green":"blue");
-                        pendant.setProperty("Closed", "color", controller.inputValue(1) ? "green":"blue");
+                        pendant.setProperty("Open", "color", controller.inputValue(1) ? "green":"blue");
+                        pendant.setProperty("Closed", "color", controller.inputValue(2) ? "green":"blue");
                         pendant.setProperty("TabBar", "currentIndex", 1);
                         break;
                     }
@@ -308,6 +310,22 @@ namespace MotoMini_DemoSetup
 
                         break;
                     }
+                    case "GPOpen":
+                    {
+                        controller.setOutput(1, true);
+                        controller.setOutput(2, false);
+                        pendant.setProperty("Open", "color", controller.inputValue(1) ? "green":"blue");
+                        pendant.setProperty("Closed", "color", controller.inputValue(2) ? "green":"blue");
+                        break;
+                    }
+                    case "GPClose":
+                    {
+                        controller.setOutput(2, true);
+                        controller.setOutput(1, false);
+                        pendant.setProperty("Open", "color", controller.inputValue(1) ? "green":"blue");
+                        pendant.setProperty("Closed", "color", controller.inputValue(2) ? "green":"blue");
+                        break;
+                    }
                 }
             }
             catch (Exception ex)
@@ -332,9 +350,9 @@ namespace MotoMini_DemoSetup
                 pendant.setProperty(("placeText" + element), "text", " ");
             }
             pendant.setProperty("startButtonImage", "source",
-                "images/green-button-off.png");
-            pendant.setProperty("autoButtonImage", "source",
                 "images/red-button-off.png");
+            pendant.setProperty("autoButtonImage", "source",
+                "images/green-button-off.png");
             pendant.setProperty("START", "checked", false);
         }
         private static bool PingPendant()
@@ -399,7 +417,7 @@ namespace MotoMini_DemoSetup
             string wordFilled = "";
             char[] wordArray = word.ToCharArray();
             word = new string(wordArray);
-            if (word.Length < 12)
+            if (word.Length < 13)
             {
                 wordFilled = word.PadRight(12);
                 //Console.WriteLine(word);
@@ -459,7 +477,7 @@ namespace MotoMini_DemoSetup
             string wordFilled = "";
             char[] wordArray = word.ToCharArray();
             word = new string(wordArray);
-            if (word.Length < 12)
+            if (word.Length < 13)
             {
                 wordFilled = word.PadRight(12);
                 Console.WriteLine(word);
@@ -470,6 +488,7 @@ namespace MotoMini_DemoSetup
             List<VariableAddress> addressList = new List<VariableAddress>() {L0, L1, L2, L3, L4, L5, L6, L7, L8, L9, L10, L11};
             for(int letter = 0; letter < wordList.Count; letter++)
             {
+                Console.WriteLine(letter);
                 var letterInt = char.ToUpper(wordFilled[letter]) - 65;
                 if (letterInt == -33)
                     letterInt = 41;
