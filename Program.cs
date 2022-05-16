@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Mime;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Threading;
 using Thrift.Collections;
 using Yaskawa.Ext.API;
@@ -18,10 +20,18 @@ namespace MotoMini_DemoSetup
             Yaskawa.Ext.Version version = new Yaskawa.Ext.Version(1, 0, 0);
             var languages = new HashSet<string> {"en", "ja"};
 
-            extension = new Yaskawa.Ext.Extension("yeu.demo-extension.ext",
-                version, "YEU", languages, "10.0.0.4", 10080);
-            //extension = new Yaskawa.Ext.Extension("yeu.test-extension.ext",
-            //    version, "YEU", languages, "10.0.0.4", 10080);
+            
+            Console.WriteLine(RuntimeInformation.ProcessArchitecture);
+            if (RuntimeInformation.ProcessArchitecture == Architecture.X64)
+            {
+                extension = new Yaskawa.Ext.Extension("yeu.demo-extension.ext",
+                    version, "YEU", languages, "10.0.0.4", 10080);
+            }
+            else
+            {
+                extension = new Yaskawa.Ext.Extension("yeu.test-extension.ext",
+                    version, "YEU", languages, "10.0.0.4", 10080);
+            } 
             // extension = new Yaskawa.Ext.Extension("yeu.test-extension.ext",
             //     version, "YEU", languages, "localhost", 10080);
             
