@@ -117,6 +117,7 @@ namespace MotoMini_DemoSetup
             pendant.addItemEventConsumer("RETURNBEADS",PendantEventType.Pressed, OnControlsItemClicked);
             pendant.addItemEventConsumer("GPOpen",PendantEventType.Pressed, OnControlsItemClicked);
             pendant.addItemEventConsumer("GPClose",PendantEventType.Pressed, OnControlsItemClicked);
+            pendant.addItemEventConsumer("settingsTab",PendantEventType.Clicked, OnControlsItemClicked);
             addVariables();
         }
 
@@ -180,14 +181,12 @@ namespace MotoMini_DemoSetup
                         pendant.setProperty("TabBar", "currentIndex", 0);
                         break;
                     }
-                    case "SETTINGS":
+                    case "SETTINGS": 
+                    case "settingsTab":
                     {
-                        Console.WriteLine(controller.inputValue(1));
-                        Console.WriteLine(controller.inputValue(2));
-                        //pendant.openUtilityWindow("settingsTab");
+                        pendant.setProperty("TabBar", "currentIndex", 1);
                         pendant.setProperty("Open", "color", controller.inputValue(1) ? "green":"blue");
                         pendant.setProperty("Closed", "color", controller.inputValue(2) ? "green":"blue");
-                        pendant.setProperty("TabBar", "currentIndex", 1);
                         break;
                     }
                     case "START":
@@ -312,18 +311,32 @@ namespace MotoMini_DemoSetup
                     }
                     case "GPOpen":
                     {
-                        controller.setOutput(1, true);
-                        controller.setOutput(2, false);
-                        pendant.setProperty("Open", "color", controller.inputValue(1) ? "green":"blue");
-                        pendant.setProperty("Closed", "color", controller.inputValue(2) ? "green":"blue");
+                        if (dispNoticeEnabled)
+                            pendant.dispNotice(Disposition.Positive, "Gripper ", "started opening gripper");
+                        else
+                            pendant.notice("Gripper", "started opening gripper");
+                        Console.WriteLine("opening");
+                        controller.setOutput(1, false);
+                        controller.setOutput(2, true);
+                        Thread.Sleep(2000);
+                        pendant.setProperty("Open", "color", controller.inputValue(2) ? "green":"blue");
+                        pendant.setProperty("Closed", "color", controller.inputValue(1) ? "green":"blue");
+
                         break;
                     }
                     case "GPClose":
                     {
-                        controller.setOutput(2, true);
-                        controller.setOutput(1, false);
-                        pendant.setProperty("Open", "color", controller.inputValue(1) ? "green":"blue");
-                        pendant.setProperty("Closed", "color", controller.inputValue(2) ? "green":"blue");
+                        
+                        if (dispNoticeEnabled)
+                            pendant.dispNotice(Disposition.Positive, "Gripper ", "started closing gripper");
+                        else
+                            pendant.notice("Gripper", "started closing gripper");
+                        Console.WriteLine("closing");
+                        controller.setOutput(1, true);
+                        controller.setOutput(2, false);
+                        Thread.Sleep(2000);
+                        pendant.setProperty("Open", "color", controller.inputValue(2) ? "green":"blue");
+                        pendant.setProperty("Closed", "color", controller.inputValue(1) ? "green":"blue");
                         break;
                     }
                 }

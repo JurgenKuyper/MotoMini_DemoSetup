@@ -42,7 +42,7 @@
             "Microsoft.NETCore.App": {
               "suppressParent": "All",
               "target": "Package",
-              "version": "[2.2.8, )",
+              "version": "[2.2.0, )",
               "autoReferenced": true
             }
           },
@@ -51,11 +51,6 @@
           ],
           "assetTargetFallback": true,
           "warn": true
-        }
-      },
-      "runtimes": {
-        "linux-arm": {
-          "#import": []
         }
       }
     }

@@ -36,8 +36,8 @@ SettingsTab : Row
             text: "Main Tab"
         }
         Row {
-            Rectangle { id: Open; width: 40; height: 40; radius: 5; color: "blue";}
-            Rectangle { id: Closed; width: 40; height: 40; radius: 5; color: "blue";}
+            Rectangle { id: Open; width: 40; height: 40; radius: 5; color: "blue";Text{id: openText; centerIn: parent; text: "O"; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
+            Rectangle { id: Closed; width: 40; height: 40; radius: 5; color: "blue";Text{id: closeText; centerIn: parent; text: "C"; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
         }
         Button {
             id: GPOpen
