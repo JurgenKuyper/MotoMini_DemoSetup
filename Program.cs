@@ -2,10 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Mime;
-using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading;
 using Thrift.Collections;
 using Yaskawa.Ext.API;
@@ -112,9 +109,8 @@ namespace MotoMini_DemoSetup
             //     "NavPanel", // YML Item type
             //     "Demo", // Button label
             //     "images/d-icon-256.png"); // Button icon
-            
             pendant.addEventConsumer(PendantEventType.UtilityOpened, OnOpened); // add onOpened call
-            controller.addEventConsumer(ControllerEventType.ServoState,controllerEvents); // add servo call
+            controller.addEventConsumer(ControllerEventType.ServoState, controllerEvents); // add servo call
             pendant.addItemEventConsumer("SETTINGS", PendantEventType.Clicked, OnControlsItemClicked); // add settings button clicked call
             pendant.addItemEventConsumer("START", PendantEventType.Clicked, OnControlsItemClicked); // add start button clicked call 
             pendant.addItemEventConsumer("TextField", PendantEventType.Accepted, OnControlsItemClicked); // add textField.Accepted call
@@ -149,7 +145,7 @@ namespace MotoMini_DemoSetup
             Errors.Aspace = AddressSpace.Byte;
             placeDirection.Aspace = AddressSpace.Byte;
             
-            letterPlaced.Address = 27; // set variable adress
+            letterPlaced.Address = 27; // set variable address
             StartVariable.Address = 0;
             L0.Address = 1;
             L1.Address = 2;
@@ -230,7 +226,8 @@ namespace MotoMini_DemoSetup
                                 if (pressed) // if start button was pressed, start word sequence on second thread.
                                 { 
                                     //T.Priority = ThreadPriority.Lowest;
-                                    T.Start();
+                                    //T.Start();
+                                    Console.WriteLine("Auto sequence started");
                                 }
 
                                 break;
@@ -373,10 +370,21 @@ namespace MotoMini_DemoSetup
                 "images/green-button-off.png");
             pendant.setProperty("START", "checked", false);
         }
-        private static bool PingPendant() // ping pendant so it is kept alive
+        private bool PingPendant() // ping pendant so it is kept alive
         {
             try
             {
+                switch (AutonomousMode && pressed)
+                {
+                    case true:
+                    { 
+                        runAutonomously();
+                        break;
+                    }
+                    case false:
+                        break;
+                }
+                     
                 return false;
             }
             catch (Exception e)
@@ -391,17 +399,18 @@ namespace MotoMini_DemoSetup
             Console.WriteLine("started"); // log started
             foreach (var word in words) // build and pick up each word in wordslist
             {
-                if (!pressed) // if button is no longer pressed, abort sequence
-                    T.Abort();
+                if (!pressed) // if button is no longer pressed, break sequence
+                    break;
                 buildWord(word, true); // build the word
                 //pendant.setProperty(("pole"), "color", "blue");
                 for (var element = 0; element < 12; element++) // reset placement icons
                 {
                     pendant.setProperty(("place" + element), "color", "blue");
                 }
+
                 direction = true;
                 if (!pressed) // if button is no longer pressed, abort sequence
-                    T.Abort();
+                    break;
                 buildWord(word, true);
                 direction = false;
             }
@@ -448,7 +457,7 @@ namespace MotoMini_DemoSetup
             if (word.Length < 13) // fill word to be 12 entries long
             {
                 wordFilled = word.PadRight(12);
-                Console.WriteLine(word);
+                Console.WriteLine("word: " + word +" word Filled: " + wordFilled + ";");
             }
             // send letters to controller
             List<Any> wordList = new List<Any>() {letter0, letter1, letter2, letter3, letter4, letter5, letter6, 
@@ -463,7 +472,7 @@ namespace MotoMini_DemoSetup
                 Console.WriteLine("LTTnumber: " + letterInt);
                 wordList[letter].IValue = letterInt;
                 controller.setVariableByAddr(addressList[letter], wordList[letter]);
-                Thread.Sleep(100);
+                Thread.Sleep(750);
             }
             controller.setVariableByAddr(placeMode, buildType ? 1 : 0); // set placement on pole or places
             Console.WriteLine("world.length: " + word.Length); // log word length
@@ -473,7 +482,7 @@ namespace MotoMini_DemoSetup
                 Thread.Sleep(200);
                 Console.WriteLine(word + " " + word[t]);
                 pendant.setProperty(word[t].ToString(), "color", "orange");
-                //controller.variableByAddr("I001");
+                Thread.Sleep(750);
                 if (buildType)
                 {
                     position = "place";
@@ -506,7 +515,8 @@ namespace MotoMini_DemoSetup
             var testExtension = new TestExtension();
             // launch
             try {
-                T = new Thread(testExtension.runAutonomously);
+                // T = new Thread(testExtension.runAutonomously);
+                // T.Priority = ThreadPriority.Highest;
                 testExtension.Setup();
             } catch (Exception e) {
                 Console.WriteLine("Extension failed in setup, aborting: "+e);
@@ -515,7 +525,7 @@ namespace MotoMini_DemoSetup
 
             // run 'forever' (or until API service shuts down)
             try {
-                testExtension.extension.run(PingPendant);
+                testExtension.extension.run(testExtension.PingPendant);
             } catch (Exception e) {
                 Console.WriteLine("Exception occured:"+e);
             }
@@ -527,8 +537,8 @@ namespace MotoMini_DemoSetup
         }
 
         private Yaskawa.Ext.Extension extension;
-        private static Yaskawa.Ext.Pendant pendant;
-        private Yaskawa.Ext.Controller controller;
+        public static Yaskawa.Ext.Pendant pendant;
+        public Yaskawa.Ext.Controller controller;
         private Yaskawa.Ext.Version apiVersion;
         private string wordString;
         private bool PlacementMode;
@@ -579,6 +589,6 @@ namespace MotoMini_DemoSetup
         Any letter9 = new Any();
         Any letter10 = new Any();
         Any letter11 = new Any();
-        private static Thread T;
+        //private static Thread T;
     }
 }  
