@@ -225,6 +225,7 @@ namespace MotoMini_DemoSetup
                             {
                                 if (pressed) // if start button was pressed, start word sequence on second thread.
                                 { 
+                                    pendant.setProperty("autoButtonImage", "source", "images/green-button-on.png");
                                     //T.Priority = ThreadPriority.Lowest;
                                     //T.Start();
                                     Console.WriteLine("Auto sequence started");
@@ -399,18 +400,8 @@ namespace MotoMini_DemoSetup
             Console.WriteLine("started"); // log started
             foreach (var word in words) // build and pick up each word in wordslist
             {
-                if (!pressed) // if button is no longer pressed, break sequence
-                    break;
                 buildWord(word, true); // build the word
-                //pendant.setProperty(("pole"), "color", "blue");
-                for (var element = 0; element < 12; element++) // reset placement icons
-                {
-                    pendant.setProperty(("place" + element), "color", "blue");
-                }
-
                 direction = true;
-                if (!pressed) // if button is no longer pressed, abort sequence
-                    break;
                 buildWord(word, true);
                 direction = false;
             }
@@ -448,12 +439,6 @@ namespace MotoMini_DemoSetup
             controller.setVariableByAddr(placeDirection, direction ? 1 : 0); // set placement direction (storage vs places)
             string position = "pole";
             string wordFilled = "";
-            if (direction) // flip word if needing to pick 
-            {
-                word = word.Reverse().ToString();
-            }
-            char[] wordArray = word.ToCharArray();
-            word = new string(wordArray);
             if (word.Length < 13) // fill word to be 12 entries long
             {
                 wordFilled = word.PadRight(12);
@@ -472,17 +457,14 @@ namespace MotoMini_DemoSetup
                 Console.WriteLine("LTTnumber: " + letterInt);
                 wordList[letter].IValue = letterInt;
                 controller.setVariableByAddr(addressList[letter], wordList[letter]);
-                Thread.Sleep(750);
             }
             controller.setVariableByAddr(placeMode, buildType ? 1 : 0); // set placement on pole or places
             Console.WriteLine("world.length: " + word.Length); // log word length
             for(var t = 0; t < word.Length; t++) // iterate over letters, wait on robot to cycle and update the screen accordingly
             {
                 controller.setVariableByAddr(letterPlaced, 0);
-                Thread.Sleep(200);
                 Console.WriteLine(word + " " + word[t]);
                 pendant.setProperty(word[t].ToString(), "color", "orange");
-                Thread.Sleep(750);
                 if (buildType)
                 {
                     position = "place";
@@ -498,12 +480,10 @@ namespace MotoMini_DemoSetup
                     pendant.setProperty("percentageText","text",t*100/word.Length+"%"); // update percentage of word done
                 }
                 controller.setVariableByAddr(StartVariable,1);
-                Thread.Sleep(100);
                 while (controller.variableByAddr(letterPlaced).IValue < 1)
                 {
                     Console.WriteLine(controller.variableByAddr(letterPlaced).IValue + " " + t);
                     Console.WriteLine(controller.variableByAddr(letterPlaced).IValue < 1);
-                    Thread.Sleep(2000);
                 }
                 pendant.setProperty(word[t].ToString(), "color", "blue");
             }
