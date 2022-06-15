@@ -117,20 +117,24 @@ MainTab : Column {
         uppercaseInput: true
         allowedChars: "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
       }
-      Row {
-        Button {
-          id: SETTINGS
-          text: "settings"
-        }
-        Button {
-          id: RETURNBEADS
-          text: "return beads"
-        }
-      }
       Button {
         id: START
         text: "start"
         checkable: true
+      }
+      Row {
+        Item {
+              width: 258
+              height: 48
+          }
+        Button {
+          id: RETURNBEADS
+          text: "return beads"
+        }
+        Button {
+          id: SETTINGS
+          text: "settings"
+        }
       }
     }
   }    

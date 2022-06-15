@@ -102,7 +102,7 @@ namespace MotoMini_DemoSetup
             pendant.registerUtilityWindow( // register frontend window
                 "demoWindow", // id
                 "UtilWindow", // Item type
-                "Demo Extension", // Menu name
+                "MotoMini Demo Extension", // Menu name
                 "Demo Utility"); // Window title
             // pendant.registerIntegration("navpanel", // id
             //     IntegrationPoint.NavigationPanel, // where
@@ -529,15 +529,15 @@ namespace MotoMini_DemoSetup
         private static List<string> words = new List<string>
         {
             "YASKAWA",
-            "ATOMETIZING",
+            "AUTOMATION",
             "MECHATRONICS",
             "ROBOTICS",
-            "YOLO",
+            "MACHINE",
             "LABORATORY",
             "FABULOUSNESS",
-            "AGREGATIONS",
+            "CONTROLLER",
             "ALPHANUMERIC",
-            "ANTIMAGNETIC"
+            "PERSEVERANCE"
         };
 
         VariableAddress letterPlaced = new VariableAddress();

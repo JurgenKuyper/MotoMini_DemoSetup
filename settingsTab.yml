@@ -20,6 +20,24 @@ SettingsTab : Row
                 id: autoCheckBox
                 checked: false
             }
+            Text {
+                text: "Words"
+                fontSize: 20
+            }
+            ComboBox {
+                id: AutoWords
+                width: 175
+                options: ["YASKAWA",
+                          "AUTOMATION",
+                          "MECHATRONICS",
+                          "ROBOTICS",
+                          "MACHINE",
+                          "LABORATORY",
+                          "FABULOUSNESS",
+                          "CONTROLLER",
+                          "ALPHANUMERIC",
+                          "PERSEVERANCE"]
+            }
         }
         Row {
             Text {
@@ -30,10 +48,6 @@ SettingsTab : Row
                 id: placeComboBox
                 options: ["Bracelet", "Poles"]
             }
-        }
-        Button {
-            id: MainButton
-            text: "Main Tab"
         }
         Row {
             Rectangle { id: Open; width: 40; height: 40; radius: 5; color: "blue";Text{id: openText; centerIn: parent; text: "O"; color: "white"; fontSize: 24; fontWeight: Const.Bold}}
@@ -46,6 +60,17 @@ SettingsTab : Row
         Button {
             id: GPClose
             text: "Close Gripper"
+        }
+        Row {
+          align: Const.Bottom
+          Item {
+              width: 593
+              height: 645
+          }
+          Button {
+              id: MainButton
+              text: "Main Tab"
+          }
         }
     }
 }
