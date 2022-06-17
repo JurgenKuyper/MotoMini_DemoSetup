@@ -263,10 +263,8 @@ namespace MotoMini_DemoSetup
                                 Console.WriteLine(PlacementMode);
                                 if(PlacementMode)
                                 {
-                                    Thread.Sleep(5000);
                                     direction = true;
                                     buildWord(wordString, PlacementMode);
-                                    direction = false;
                                 }
 
                                 initializeScreen(); // reset screen after sequence
@@ -396,11 +394,11 @@ namespace MotoMini_DemoSetup
         }
         private void runAutonomously()
         {
-            direction = false; // set direction to normal (pick from storage place on poles
+            direction = false; // set direction to normal (pick from storage place on poles)
             Console.WriteLine("started"); // log started
             foreach (var word in words) // build and pick up each word in wordslist
             {
-                buildWord(word, true); // build the word
+                buildWord(word, true); // build the word on poles
                 direction = true;
                 buildWord(word, true);
                 direction = false;
